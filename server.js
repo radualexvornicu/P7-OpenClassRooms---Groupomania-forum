@@ -20,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.json({ message: "Server test ok" });
 });
+
 const db = require("./models");
 db.sequelize.sync();
 

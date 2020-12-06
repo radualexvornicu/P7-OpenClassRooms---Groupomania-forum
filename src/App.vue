@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <div class="navbar-nav mr-auto">
+    <nav class="navbar navbar-expand ">
+      <img src="../public/img/icon-left-font.png" alt="">
+      <div class="navbar-nav mr-auto">        
         <li class="nav-item">
           <router-link to="/home" class="nav-link">
             <font-awesome-icon icon="home" />Home
@@ -81,3 +82,12 @@ export default {
   }
 };
 </script>
+<style lang="css" scoped>
+img{
+  width: 70%;
+  height: 400px;
+  z-index: -1;
+  position: absolute;
+  
+}
+</style>

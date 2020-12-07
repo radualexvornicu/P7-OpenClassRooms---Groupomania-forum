@@ -42,50 +42,74 @@ db.user.belongsToMany(db.role, {
   foreignKey: "userId",
   otherKey: "roleId"
 });
-/*
-//One Categorie can have several Topics
-db.categories.belongsToMany(db.topics,{
-  through: "cat_topics",
-  foreignKey: "categoriesId",
-  otherKey: "topicId"
+
+// User - Categories asociasion !!!
+
+//One User can have Many categories
+db.user.belongsToMany(db.categories,{
+  through: "user_cat",
+  foreignKey: "userId",
+  otherKey: "categoriesId"
 });
-//One Topic has one Categorie
-db.topics.belongsTo(db.categories,{
-    through: "cat_topics",
-    foreignKey: "topicId",
-    otherKey: "categoriesId"
+//One Categorie has one User
+db.categories.belongsTo(db.user,{
+    through: "user_cat",
+    foreignKey: "categoriesId",
+    otherKey: "userId"
   });
-//One Topic has One User
-db.topics.hasOne(db.user,{
-  through: "topic_user",
-  foreignKey: "topicId",
+// User - Topics asociasion !!!
+//One User can have Many Topics
+db.user.belongsToMany(db.topics,{
+  through: "user_topics",
+  foreignKey: "userId",
+  otherKey: "topicsId"
+});
+//One Topics  has one User
+db.topics.belongsTo(db.user,{
+  through: "user_topics",
+  foreignKey: "topicsId",
   otherKey: "userId"
 });
-//One use can have Many topics
-db.user.belongsToMany(db.topics,{
-  through: "topic_user",
-  foreignKey: "userId",
-  otherKey: "topicId"
-});
+// User - Posts asociasion !!!
 //One Topic can have Many Posts
-db.topics.belongsToMany(db.posts,{
-  through: "topic_posts",
-  foreignKey: "topicId",
-  otherKey: "postsId"
-});
-//One Topic can have Many Posts
-db.posts.belongsTo(db.topics,{
-  through: "topic_posts",
-  foreignKey: "postsId",
-  otherKey: "topicId"
-});
-//One User has many post
 db.user.belongsToMany(db.posts,{
   through: "user_posts",
   foreignKey: "userId",
   otherKey: "postsId"
 });
-*/
+//One Topic can have Many Posts
+db.posts.belongsTo(db.user,{
+  through: "user_posts",
+  foreignKey: "postsId",
+  otherKey: "userId"
+});
+// Topics - Categories asociasion !!!
+//One Topics has one categorie
+db.topics.belongsTo(db.categories,{
+  through: "topics_cat",
+  foreignKey: "topicsId",
+  otherKey: "categoriesId"
+});
+//One Categories has many topisc
+db.categories.belongsToMany(db.topics, {
+  through: "topics_cat",
+  foreignKey: "categoriesIs",
+  otherKey: "topicsId"
+});
+// Topics - Posts asociasion !!!
+//One Topics has many Posts
+db.topics.belongsToMany(db.posts, {
+  through: "topics_posts",
+  foreignKey: "topicsId",
+  otherKey: "postsId"
+});
+//One Posts has one Topics
+db.posts.belongsToMany(db.topics, {
+  through: "topics_posts",
+  foreignKey: "postsId",
+  otherKey: "topicsId"
+});
+
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;

@@ -22,7 +22,34 @@ app.get("/", (req, res) => {
 });
 
 const db = require("./models");
+
+/*
+const Role = db.role;
+const run = async () => {};
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+  run();
+  initial();
+});
+function initial() {
+  Role.create({
+    id: 1,
+    name: "user"
+  });
+ 
+  Role.create({
+    id: 2,
+    name: "moderator"
+  });
+ 
+  Role.create({
+    id: 3,
+    name: "admin"
+  });
+}
+*/
 db.sequelize.sync();
+
 
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);

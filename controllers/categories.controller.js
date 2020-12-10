@@ -1,6 +1,8 @@
-const { categories } = require("../models");
+const db = require("../models");
+const Categories = db.categories;
+const Op = db.Sequelize.Op;
 
-// Create and Save a new Tutorial
+// Create and Save a new Categori
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.catname) {
@@ -10,21 +12,21 @@ exports.create = (req, res) => {
     return;
   }
   // Create a Categorie
-  const Categories = {
+  const categories = {
     catname: req.body.catname,
-    catdescription: req.body.catdescription
+    catdescription: req.body.catdescription,
+    userId: req.body.userId
   };
   // Save Categorie in the database
-  Categories.create(categories)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Categorie."
-      });
+  Categories.create(categories).then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while creating the Categorie."
     });
+  });
 };
 
 // Retrieve all Categories from the database.

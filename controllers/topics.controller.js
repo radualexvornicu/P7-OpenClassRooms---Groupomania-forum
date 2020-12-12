@@ -111,7 +111,7 @@ exports.delete = (req, res) => {
       });
 };
 
-// Delete all Tutorials from the database.
+// Delete all Topics from the database.
 exports.deleteAll = (req, res) => {
     Topics.destroy({
         where: {},

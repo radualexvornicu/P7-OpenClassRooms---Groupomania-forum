@@ -3,7 +3,7 @@
     <div class="list row">
     <div class="col-md-8">
       <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search by title"
+        <input type="text" class="form-control" placeholder="Search by Categorie name"
           v-model="catname"/>
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="button"
@@ -15,14 +15,16 @@
       </div>
     </div>
     <div class="col-md-6">
-      <h4>Categories List</h4>
+      <h4>Categories List</h4> 
+      <button class="m-3 btn btn-sm btn-success" @click="refreshCategorieList()">
+        Refresh Categorie list
+      </button>
       <ul class="list-group">
         <li class="list-group-item"
           :class="{ active: indexCat == currentIndexCat }"
           v-for="(categories, indexCat) in categories"
           :key="indexCat"
-          @click="setActiveCategorie(categories, indexCat)"
-        >
+          @click="setActiveCategorie(categories, indexCat);" >
           {{ categories.catname }}
         </li>
       </ul>
@@ -42,19 +44,20 @@
         >
           Edit
         </a>
+        
       </div>
       <div v-else>
         <br />
         <p>Please click on a Categorie...</p>
       </div>
     </div>
-    <div v-if="currentCategorie">
+    <div v-show="currentCategorie">
       <ul class="list-group">
         <li class="list-group-item"
           :class="{ active: indexTopic == currentIndexTopic }"
           v-for="(topics, indexTopic) in topics"
           :key="indexTopic"
-          @click="setActiveTopic(topics, indexTopic)"
+          
         >
           {{ topics.topicsubject }}
         </li>
@@ -72,9 +75,11 @@ import TopicsDataService from "../services/TopicsDataService";
 
 export default {
   name: 'User',
-     
+  
   data() {
+    
     return {
+      showTopicsList : false,
       categories: [],
       currentCategorie: null,
       currentIndexCat: -1,
@@ -84,7 +89,9 @@ export default {
       currentIndexTopic: -1,
       topicsubject: ""
     };
+    
   },
+  
    methods: {
     retrieveCategories() {
       CategoriesDataService.getAll()
@@ -96,7 +103,8 @@ export default {
           console.log(e);
         });
     },
-    refreshTopicsList() {
+    refreshCategorieList() {
+      
       this.retrieveCategories();
       this.currentCategorie = null;
       this.currentIndexCat = -1;
@@ -105,6 +113,9 @@ export default {
     setActiveCategorie(categorie, indexCat) {
       this.currentCategorie = categorie;
       this.currentIndexCat = indexCat;
+      var catID = this.currentCategorie.id;
+      console.log(catID);
+      this.retrieveTopics(catID);
     },
 
     removeAllCategories() {
@@ -129,7 +140,9 @@ export default {
         });
     },
     retrieveTopics(catid) {
-      TopicsDataService.getAll(catid)
+      var id = catid;
+      console.log(id);
+      TopicsDataService.getAll(id)
         .then(response => {
           this.topics = response.data;
           console.log(response.data);

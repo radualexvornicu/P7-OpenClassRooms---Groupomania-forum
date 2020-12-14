@@ -7,7 +7,7 @@ module.exports = app => {
     router.post("/", topics.create);
   
     // Retrieve all Categories
-    router.get("/",  topics.findAll);
+    router.get("/catid/:id", topics.findAll);
   
     // Retrieve a single Categorie with id
     router.get("/:id",  topics.findOne);

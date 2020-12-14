@@ -31,8 +31,9 @@ exports.create = (req, res) => {
 
 // Retrieve all Topics from the database.
 exports.findAll = (req, res) => {
-    const topicsubject = req.query.topicsubject;
-    var condition = topicsubject ? { topicsubject: { [Op.like]: `%${topicsubject}%` } } : null;
+    const categorieId = req.params.id;
+    console.log(categorieId);
+    var condition = categorieId ? { categorieId: { [Op.like]: `%${categorieId}%` } } : null;
   
     Topics.findAll({ where: condition })
       .then(data => {

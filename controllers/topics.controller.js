@@ -29,7 +29,7 @@ exports.create = (req, res) => {
   });
 };
 
-// Retrieve all Topics from the database.
+// Retrieve all Topics from the database with Categori Id.
 exports.findAll = (req, res) => {
     const categorieId = req.params.id;
     console.log(categorieId);

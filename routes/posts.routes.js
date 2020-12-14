@@ -3,22 +3,22 @@ module.exports = app => {
   
     var router = require("express").Router();
   
-    // Create a new Categorie
+    // Create a new Post
     router.post("/", posts.create);
   
-    // Retrieve all Categories
-    router.get("/",  posts.findAll);
+    // Retrieve all Posts
+    router.get("/topid/:id",  posts.findAll);
   
-    // Retrieve a single Categorie with id
+    // Retrieve a single Post with id
     router.get("/:id",  posts.findOne);
   
-    // Update a Categorie with id
+    // Update a Post with id
     router.put("/:id",  posts.update);
   
-    // Delete a Categorie with id
+    // Delete a Post with id
     router.delete("/:id", posts.delete);
   
-    // Delete all Categories
+    // Delete all Posts
     router.delete("/", posts.deleteAll);
   
     app.use('/api/posts', router);

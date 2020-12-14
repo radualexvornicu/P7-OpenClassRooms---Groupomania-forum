@@ -29,10 +29,10 @@ exports.create = (req, res) => {
   });
 };
 
-// Retrieve all Posts from the database.
+// Retrieve all Posts from the database with Topic Id.
 exports.findAll = (req, res) => {
-    const postcontent = req.query.postcontent;
-    var condition = postcontent ? { postcontent: { [Op.like]: `%${postcontent}%` } } : null;
+    const topicId = req.params.id;
+    var condition = topicId ? { topicId: { [Op.like]: `%${topicId}%` } } : null;
   
     Posts.findAll({ where: condition })
       .then(data => {

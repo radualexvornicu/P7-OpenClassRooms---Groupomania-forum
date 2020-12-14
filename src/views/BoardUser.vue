@@ -51,18 +51,21 @@
         <p>Please click on a Categorie...</p>
       </div>
     </div>
-    <div v-show="currentCategorie">
+    <div class="col-md-6"
+    v-show="currentCategorie">
+    <h4>Topics List</h4>
       <ul class="list-group">
         <li class="list-group-item"
           :class="{ active: indexTopic == currentIndexTopic }"
           v-for="(topics, indexTopic) in topics"
           :key="indexTopic"
-          
+          @click="setActiveTopic(topics, indexTopic);"
         >
           {{ topics.topicsubject }}
         </li>
       </ul>
     </div>
+    
   </div>
 
   </div>
@@ -155,13 +158,13 @@ export default {
   
     
 
-    refreshTopicsList() {
+  refreshTopicsList() {
       this.retrieveTopics();
       this.currentTopic = null;
       this.currentIndexTopic = -1;
     },
 
-    setActiveTopic(topic, indexTopic) {
+  setActiveTopic(topic, indexTopic) {
       this.currentTopic = topic;
       this.currentIndexTopic = indexTopic;
     },
@@ -188,7 +191,6 @@ export default {
         });
     },
   mounted() {
-    this.retrieveTopics(2);
     this.retrieveCategories();
     UserService.getUserBoard().then(
       response => {

@@ -1,21 +1,6 @@
 <template>
   <div class="container">
-    <header class="jumbotron">
-      <h3>{{content}}</h3>
-    </header>
-    
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <router-link to="/categories" class="nav-link">Categories</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/add" class="nav-link">Add</router-link>
-        </li>
-      </div>
-    </nav>
-
-   <div class="list row">
+    <div class="list row">
     <div class="col-md-8">
       <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Search by title"
@@ -31,21 +16,16 @@
     </div>
     <div class="col-md-6">
       <h4>Categories List</h4>
-      
       <ul class="list-group">
         <li class="list-group-item"
-          :class="{ active: index == currentIndex }"
-          v-for="(categories, index) in categories"
-          :key="index"
-          @click="setActiveCategorie(categories, index)"
+          :class="{ active: indexCat == currentIndexCat }"
+          v-for="(categories, indexCat) in categories"
+          :key="indexCat"
+          @click="setActiveCategorie(categories, indexCat)"
         >
           {{ categories.catname }}
         </li>
-      </ul>  
-
-      <button class="m-3 btn btn-sm btn-danger" @click="removeAllCategories">
-        Remove All
-      </button>
+      </ul>
     </div>
     <div class="col-md-6">
       <div v-if="currentCategorie">
@@ -68,35 +48,44 @@
         <p>Please click on a Categorie...</p>
       </div>
     </div>
+    <div v-if="currentCategorie">
+      <ul class="list-group">
+        <li class="list-group-item"
+          :class="{ active: indexTopic == currentIndexTopic }"
+          v-for="(topics, indexTopic) in topics"
+          :key="indexTopic"
+          @click="setActiveTopic(topics, indexTopic)"
+        >
+          {{ topics.topicsubject }}
+        </li>
+      </ul>
+    </div>
   </div>
+
   </div>
 </template>
 
 <script>
 import UserService from '../services/user.service';
 import CategoriesDataService from "../services/CategoriesDataService";
+import TopicsDataService from "../services/TopicsDataService";
 
 export default {
   name: 'User',
- // name: "categories-list",
+     
   data() {
     return {
-      content: '',
-      categories: {
-        id: null,
-        catname: "",
-        catdescription: "",
-        userId:""
-      },
-
-      Categories: [],
+      categories: [],
       currentCategorie: null,
-       message: '',
-      currentIndex: -1,
-      catname: ""
+      currentIndexCat: -1,
+      catname: "",
+      topics: [],
+      currentTopic: null,
+      currentIndexTopic: -1,
+      topicsubject: ""
     };
   },
-  methods: {
+   methods: {
     retrieveCategories() {
       CategoriesDataService.getAll()
         .then(response => {
@@ -107,17 +96,15 @@ export default {
           console.log(e);
         });
     },
-
-    refreshList() {
+    refreshTopicsList() {
       this.retrieveCategories();
       this.currentCategorie = null;
-      this.currentIndex = -1;
+      this.currentIndexCat = -1;
     },
 
-    setActiveCategorie(categories, index) {
-      this.currentCategorie = categories;
-      this.currentIndex = index;
-      console.log(index);
+    setActiveCategorie(categorie, indexCat) {
+      this.currentCategorie = categorie;
+      this.currentIndexCat = indexCat;
     },
 
     removeAllCategories() {
@@ -140,9 +127,56 @@ export default {
         .catch(e => {
           console.log(e);
         });
+    },
+    retrieveTopics(catid) {
+      TopicsDataService.getAll(catid)
+        .then(response => {
+          this.topics = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
   },
+  
+    
+
+    refreshTopicsList() {
+      this.retrieveTopics();
+      this.currentTopic = null;
+      this.currentIndexTopic = -1;
+    },
+
+    setActiveTopic(topic, indexTopic) {
+      this.currentTopic = topic;
+      this.currentIndexTopic = indexTopic;
+    },
+
+    removeAllTopics() {
+      TopicsDataService.deleteAll()
+        .then(response => {
+          console.log(response.data);
+          this.refreshList();
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    
+   searchCatname() {
+      TopicsDataService.findByTitle(this.catname)
+        .then(response => {
+          this.topics = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
   mounted() {
+    this.retrieveTopics(2);
+    this.retrieveCategories();
     UserService.getUserBoard().then(
       response => {
         this.content = response.data;
@@ -154,7 +188,6 @@ export default {
           error.toString();
       }
     );
-    this.retrieveCategories();
   }
 };
 </script>

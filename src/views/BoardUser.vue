@@ -78,7 +78,7 @@
           </li>
         </ul>
       </div>
-      <div class="col-md-6" v-show="currentCategorie">
+      <div class="col-md-6" v-show="currentTopic">
         <h4>Posts Thread</h4>
         <ul class="list-group">
           <li
@@ -139,6 +139,10 @@ export default {
     },
 
     setActiveCategorie(categorie, indexCat) {
+      this.currentTopic = null;
+      this.currentIndexTopic = -1;
+      this.currentPost = null;
+      this.currentIndexPost = -1;
       this.currentCategorie = categorie;
       this.currentIndexCat = indexCat;
       var catID = this.currentCategorie.id;

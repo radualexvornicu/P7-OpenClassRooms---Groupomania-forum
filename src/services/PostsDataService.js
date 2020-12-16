@@ -1,34 +1,33 @@
-import axios from 'axios';
-import authHeader from './auth-header';
+import http from "../http-common";
 const API_URL = 'http://localhost:8080/api/';
 
 class PostsDataService {
   getAll(topid) {
-    return axios.get(API_URL + `posts/topid/${topid}`, { headers: authHeader() });
+    return http.get(API_URL + `posts/topid/${topid}`);
   }
 
   get(id) {
-    return axios.get(API_URL + `posts/${id}`, { headers: authHeader() });
+    return http.get(API_URL + `posts/${id}`);
   }
 
   create(data) {
-    return axios.post(API_URL + "posts", { headers: authHeader() }, data);
+    return http.post(API_URL + "posts", data);
   }
 
   update(id, data) {
-    return axios.put(API_URL + `posts/${id}`, { headers: authHeader() }, data);
+    return http.put(API_URL + `posts/${id}`, data);
   }
 
   delete(id) {
-    return axios.delete(API_URL + `posts/${id}`, { headers: authHeader() });
+    return http.delete(API_URL + `posts/${id}` );
   }
 
   deleteAll() {
-    return axios.delete(API_URL + "posts", { headers: authHeader() });
+    return http.delete(API_URL + "posts" );
   }
 
   findByTitle(postsubject) {
-    return axios.get(API_URL + `posts?postsubject=${postsubject}`, { headers: authHeader() });
+    return http.get(API_URL + `posts?postsubject=${postsubject}` );
   }
 }
 

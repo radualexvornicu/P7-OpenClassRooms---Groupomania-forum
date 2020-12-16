@@ -50,23 +50,6 @@ export const router = new Router({
       // lazy-loaded
       component: () => import('./views/BoardUser.vue')
     },
-    // Categories Routers
-    {
-      path: "/",
-      alias: "/categories",
-      name: "categories",
-      component: () => import("./components/CategoriesList")
-    },
-    {
-      path: "/categories/:id",
-      name: "categorie-details",
-      component: () => import("./components/Categorie")
-    },
-    {
-      path: "/add",
-      name: "add",
-      component: () => import("./components/AddCategorie")
-    }
   ]
 });
 

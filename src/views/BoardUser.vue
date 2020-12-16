@@ -91,6 +91,28 @@
             {{ posts.postcontent }}
           </li>
         </ul>
+        <div class="submit-form">
+    <div v-if="!submittedPost">
+      <div class="form-group">
+        <label for="postcontent">Post Content</label>
+        <input
+          type="text"
+          class="form-control"
+          id="postcontent"
+          required
+          v-model="post.postcontent"
+          name="postcontent"
+        />
+      </div>
+
+      <button @click="savePost" class="btn btn-success">Submit</button>
+    </div>
+
+    <div v-else>
+      <h4>You submitted successfully!</h4>
+      <button class="btn btn-success" @click="newPost">Add</button>
+    </div>
+  </div>
       </div>
     </div>
   </div>
@@ -101,6 +123,7 @@ import UserService from "../services/user.service";
 import CategoriesDataService from "../services/CategoriesDataService";
 import TopicsDataService from "../services/TopicsDataService";
 import PostsDataService from "../services/PostsDataService";
+const user = JSON.parse(localStorage.getItem('user'));
 
 export default {
   name: "User",
@@ -118,6 +141,14 @@ export default {
       currentPost: null,
       currentIndexPost: -1,
       postcontent: "",
+      post: {
+        id: null,
+        postcontent: "",
+        topicId: "",
+        userId: ""
+
+      },
+      submittedPost: false,
     };
   },
 
@@ -220,6 +251,28 @@ export default {
           console.log(e);
         });
   },
+  savePost() {
+      var data = {
+        postcontent: this.post.postcontent,
+        topicId: this.currentTopic.id,
+        userId: user.id
+      };
+      console.log(data);
+      PostsDataService.create(data)
+        .then(response => {
+          this.post.id = response.data.id;
+          console.log(response.data);
+          this.submitted = true;
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    
+    newCategorie() {
+      this.submitted = false;
+      this.post = {};
+    }
 
 },
   mounted() {

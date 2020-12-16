@@ -5,9 +5,10 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Posts
 exports.create = (req, res) => {
   // Validate request
+  console.log(req.body);
   if (!req.body.postcontent) {
     res.status(400).send({
-      message: "Posts subject can not be empty!"
+      message: "Posts content can not be empty!"
     });
     return;
   }
@@ -31,6 +32,7 @@ exports.create = (req, res) => {
 
 // Retrieve all Posts from the database with Topic Id.
 exports.findAll = (req, res) => {
+  console.log(req.headers);
     const topicId = req.params.id;
     var condition = topicId ? { topicId: { [Op.like]: `%${topicId}%` } } : null;
   

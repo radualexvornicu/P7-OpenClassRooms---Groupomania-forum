@@ -1,34 +1,33 @@
-import axios from 'axios';
-import authHeader from './auth-header';
+import http from "../http-common";
 const API_URL = 'http://localhost:8080/api/';
 
 class CategoriesDataService {
   getAll() {
-    return axios.get(API_URL + "categories", { headers: authHeader() });
+    return http.get(API_URL + "categories" );
   }
 
   get(id) {
-    return axios.get(API_URL + `categories/${id}`, { headers: authHeader() });
+    return http.get(API_URL + `categories/${id}` );
   }
 
   create(data) {
-    return axios.post(API_URL + "categories", { headers: authHeader() }, data);
+    return http.post(API_URL + "categories" , data);
   }
 
   update(id, data) {
-    return axios.put(API_URL + `categories/${id}`, { headers: authHeader() }, data);
+    return http.put(API_URL + `categories/${id}` , data);
   }
 
   delete(id) {
-    return axios.delete(API_URL + `categories/${id}`, { headers: authHeader() });
+    return http.delete(API_URL + `categories/${id}` );
   }
 
   deleteAll() {
-    return axios.delete(API_URL + "categories", { headers: authHeader() });
+    return http.delete(API_URL + "categories" );
   }
 
   findByTitle(catname) {
-    return axios.get(API_URL + `categories?catname=${catname}`, { headers: authHeader() });
+    return http.get(API_URL + `categories?catname=${catname}` );
   }
 }
 

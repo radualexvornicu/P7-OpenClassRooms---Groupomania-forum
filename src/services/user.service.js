@@ -7,6 +7,9 @@ class UserService {
   getPublicContent() {
     return axios.get(API_URL + 'all');
   }
+  getUserName(id){
+    return axios.get(API_URL + `name/${id}`);
+  }
 
   getUserBoard() {
     return axios.get(API_URL + 'user', { headers: authHeader() });

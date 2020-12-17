@@ -12,6 +12,8 @@ module.exports = function(app) {
 
   app.get("/api/content/all", controller.allAccess);
 
+   app.get("/api/content/name/:id", controller.findOne );
+
   app.get(
     "/api/content/user",
     [authJwt.verifyToken],

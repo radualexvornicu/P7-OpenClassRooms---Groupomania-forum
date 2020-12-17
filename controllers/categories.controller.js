@@ -63,8 +63,10 @@ exports.findOne = (req, res) => {
 
 // Update a Categorie by the id in the request
 exports.update = (req, res) => {
+  
     const id = req.params.id;
-
+console.log(id);
+console.log(req.body);
     Categories.update(req.body, {
       where: { id: id }
     })

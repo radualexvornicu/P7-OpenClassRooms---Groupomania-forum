@@ -202,7 +202,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click="submittedEditTopic = true"
+                @click="submittedEditTopic = !submittedEditTopic"
               >
                 Edit
               </button>
@@ -211,7 +211,7 @@
                 type="button"
                 class="btn btn-danger m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click="removeTopic(currentTopic.id)"
+                @click="removeTopic(currentTopic.id, currentCategorie.id)"
               >
                 Delete
               </button>
@@ -373,6 +373,7 @@ export default {
       }
       /*   */
     },
+    
 
     searchCatname() {
       CategoriesDataService.findByTitle(this.catname)
@@ -385,6 +386,8 @@ export default {
         });
     },
     retrieveTopics(catid) {
+      this.currentTopic = null;
+      this.currentIndexTopic = -1;
       var id = catid;
       console.log(id);
       TopicsDataService.getAll(id)
@@ -397,19 +400,37 @@ export default {
         });
     },
 
-    refreshTopicsList() {
-      this.retrieveTopics();
-
-    },
-
-    setActiveTopic(topic, indexTopic) {
+        setActiveTopic(topic, indexTopic) {
       this.currentTopic = topic;
       this.currentIndexTopic = indexTopic;
       var topID = this.currentTopic.id;
       console.log(topID);
       this.retrievePosts(topID);
     },
+removeTopic(topicId, catId){
+  console.log(topicId);
+      var r = confirm("Press a button!");
+      if (r == true) {
+        console.log("You pressed OK!");
+        var r2 = confirm("Press a button AGAIN!");
+        if (r2 == true) {
+          console.log("You pressed OK AGAIN!");
+        TopicsDataService.delete(topicId)
+        .then((response) => {
+          console.log(response.data);
 
+          this.retrieveTopics(catId);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+        }else {
+        console.log("You pressed ABORTED!");
+      }
+      } else {
+        console.log("You pressed CANCEL!");
+      }
+    },
     removeAllTopics() {
       TopicsDataService.deleteAll()
         .then((response) => {
@@ -483,7 +504,7 @@ export default {
           this.topic.id = response.data.id;
           console.log(response.data);
           this.submittedSaveTopic = false;
-          this.refreshTopicsList();
+          this.retrieveTopics(this.currentCategorie.id);
         })
         .catch((e) => {
           console.log(e);

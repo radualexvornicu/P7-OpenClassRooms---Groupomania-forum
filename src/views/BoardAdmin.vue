@@ -28,11 +28,13 @@
           </button>
           <button
             class="m-3 btn btn-sm btn-info"
-            @click="submittedSaveCat = true"
+            @click="submittedSaveCat = !submittedSaveCat"
           >
             Add New Categorie
           </button>
-        <div class="col-md-6" v-if="submittedSaveCat">
+          <div class="submit-form  col-md-6">
+            <div v-if="submittedEditCat">
+              <h5 >Edit Active Categorie</h5>
               <div class="form-group">
                 <label for="catname">Categorie Name</label>
                 <input
@@ -47,7 +49,8 @@
 
               <div class="form-group">
                 <label for="catdescription">Categorie Description</label>
-                <input
+                <textarea
+                type="text"
                   class="form-control"
                   id="catdescription"
                   required
@@ -56,10 +59,69 @@
                 />
               </div>
 
-              <button @click="saveCategorie()" class="btn btn-success">
+              <button
+                @click="editCategorie(currentCategorie.id)"
+                class="btn btn-success m-1 p-0"
+              >
                 Submit
               </button>
-              <button @click="refreshCategorieList(); submittedSaveCat=false" class="btn btn-danger">
+              <button @click="submittedEditCat=false" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+            
+            <div v-if="submittedSaveTopic">
+              <h5 >Add Topic to Active Categorie</h5>
+              <div class="form-group">
+                <label for="topicsubject">Topic subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="topicsubject"
+                  required
+                  v-model="topic.topicsubject"
+                  name="topicsubject"
+                />
+              </div>            
+              <button @click="saveTopic()" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="submittedSaveTopic=!submittedSaveTopic" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+          </div>
+        <div class="col-md-6" v-if="submittedSaveCat">
+          <h5 >Create a new Categorie</h5>
+              <div class="form-group">
+                <label for="catname">Categorie Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="catname"
+                  required
+                  v-model="categorie.catname"
+                  name="catname"
+                />
+              </div>
+
+              <div class="form-group">
+                
+                <label for="catdescription">Categorie Description</label>
+                <textarea 
+                type="text"
+                  class="form-control"
+                  id="catdescription"
+                  required
+                  v-model="categorie.catdescription"
+                  name="catdescription"
+                />
+              </div>
+
+              <button @click="saveCategorie()" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="submittedSaveCat=false" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
@@ -92,7 +154,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexCat == currentIndexCat"
-                @click="submittedEditCat = true"
+                @click="submittedEditCat = !submittedEditCat"
               >
                 Edit
               </button>
@@ -100,7 +162,7 @@
                 type="button"
                 class="btn btn-success m-1 p-0"
                 v-if="indexCat == currentIndexCat"
-                @click="submittedSaveTopic = true"
+                @click="submittedSaveTopic = !submittedSaveTopic"
               >
                 Add Topic
               </button>
@@ -114,56 +176,7 @@
               </button>
             </div>
           </div>
-          <div class="submit-form">
-            <div v-if="submittedEditCat">
-              <div class="form-group">
-                <label for="catname">Categorie Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="catname"
-                  required
-                  v-model="categorie.catname"
-                  name="catname"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="catdescription">Categorie Description</label>
-                <input
-                  class="form-control"
-                  id="catdescription"
-                  required
-                  v-model="categorie.catdescription"
-                  name="catdescription"
-                />
-              </div>
-
-              <button
-                @click="editCategorie(currentCategorie.id)"
-                class="btn btn-success"
-              >
-                Submit
-              </button>
-            </div>
-            
-            <div v-if="submittedSaveTopic">
-              <div class="form-group">
-                <label for="topicsubject">Topic subject</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="topicsubject"
-                  required
-                  v-model="topic.topicsubject"
-                  name="topicsubject"
-                />
-              </div>            
-              <button @click="saveTopic()" class="btn btn-success">
-                Submit
-              </button>
-            </div>
-          </div>
+          
         </div>
 
         <div class="col-md-4" v-if="currentCategorie">

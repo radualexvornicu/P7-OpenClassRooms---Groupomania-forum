@@ -70,7 +70,7 @@
               </button>
             </div>
             
-            <div v-if="submittedSaveTopic">
+            <div  v-if="submittedSaveTopic">
               <h5 >Add Topic to Active Categorie</h5>
               <div class="form-group">
                 <label for="topicsubject">Topic subject</label>
@@ -87,6 +87,26 @@
                 Submit
               </button>
               <button @click="submittedSaveTopic=!submittedSaveTopic" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+            <div  v-if="submittedSavePost">
+              <h5 >Add Post to Active Topic</h5>
+              <div class="form-group">
+                <label for="postcontent">Post Content</label>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  id="postcontent"
+                  required
+                  v-model="post.postcontent"
+                  name="postcontent"
+                />
+              </div>            
+              <button @click="savePost()" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="submittedSavePost=!submittedSavePost" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
@@ -147,7 +167,7 @@
               <h6 class="card-title font-weight-bold">Categorie Description </h6>
               
               <h6 class="card-text">{{ categories.catdescription }}</h6>
-              <cite><h6>created by {{userNameCat}}</h6></cite> 
+              <cite><h6>created by <strong>{{userNameCat}}</strong></h6></cite> 
             </div>
             <div>
               <button
@@ -195,7 +215,7 @@
             <div class="card-body" v-if="indexTopic == currentIndexTopic">
               <h6 class="card-title font-weight-bold">Topic Thead</h6>
               <h6 class="card-text">Active thred length - {{posts.length}}</h6>
-              <cite><h6>created by {{userNameTopic}}</h6></cite>
+              <cite><h6>created by <strong>{{userNameTopic}}</strong></h6></cite>
             </div>
             <div>
               <button
@@ -206,7 +226,15 @@
               >
                 Edit
               </button>
-              
+              <button
+                type="button"
+                class="btn btn-success m-1 p-0"
+                v-if="indexTopic == currentIndexTopic"
+                @click="submittedSavePost = !submittedSavePost"
+              >
+                Add
+              </button>
+
               <button
                 type="button"
                 class="btn btn-danger m-1 p-0"
@@ -218,20 +246,44 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4" v-if="currentTopic">
+        <div class="col-md-4" v-if="currentCategorie">
           <h4>Posts Thread</h4>
-          <ul class="list-group">
-            <li
-              class="list-group-item"
+          <div
+            type="button"
+            class="card border-info mb-3 btn-light"
               :class="{ active: indexPost == currentIndexPost }"
-              v-for="(posts, indexPost) in posts"
+            v-for="(posts, indexPost) in posts"
               :key="indexPost"
-              @click="setActivePost(posts, indexPost)"
-            >
-              {{ posts.postcontent }}
-            </li>
-          </ul>
+              @click="setActivePost(posts, indexPost); getUserNamePost(posts.userId)">
+            <div class="card-header">
+              <h6>{{ posts.postcontent }}</h6>
             </div>
+            <div class="card-body" v-if="indexPost == currentIndexPost">
+              <cite><h6 class="card-text">created at {{posts.createdAt}}</h6></cite>
+              <cite><h6 class="card-text">created at {{posts.updatedAt}}</h6></cite>
+              <cite><h6>created by <strong>{{userNamePost}}</strong></h6></cite>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="btn btn-warning m-1 p-0"
+                v-if="indexPost == currentIndexPost"
+                @click="submittedEditPost = !submittedEditPost"
+              >
+                Edit
+              </button>
+              
+              <button
+                type="button"
+                class="btn btn-danger m-1 p-0"
+                v-if="indexPost == currentIndexPost"
+                @click="removePost(currentTopic.id, currentPost.id)"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -281,11 +333,13 @@ export default {
       },
       userNameCat: "",
       userNameTopic: "",
-      submittedPost: false,
+      userNamePost: "",
       submittedSaveCat: false,
       submittedEditCat: false,
       submittedDeleteCat: false,
       submittedSaveTopic: false,
+      submittedSavePost: false,
+      submittedEditPost: false,
     };
   },
 
@@ -522,16 +576,27 @@ removeTopic(topicId, catId){
         .then((response) => {
           this.post.id = response.data.id;
           console.log(response.data);
-          this.submitted = true;
+          this.submittedSavePost = false;
+          this.retrievePosts(this.currentTopic.id);
         })
         .catch((e) => {
           console.log(e);
         });
     },
+    setActivePost(post, indexPost) {
+      this.currentPost = post;
+      this.currentIndexPost = indexPost;
+  },
 
-    newCategorie() {
-      this.submitted = false;
-      this.post = {};
+  
+    getUserNamePost(id){
+      UserService.getUserName(id)
+      .then((response) => {
+        this.userNamePost = response.data.username;
+        console.log(response.data);
+      }).catch((e) => {
+          console.log(e);
+        });
     },
   },
   mounted() {

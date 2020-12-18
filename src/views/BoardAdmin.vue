@@ -32,10 +32,42 @@
           >
             Add New Categorie
           </button>
+        <div class="col-md-6" v-if="submittedSaveCat">
+              <div class="form-group">
+                <label for="catname">Categorie Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="catname"
+                  required
+                  v-model="categorie.catname"
+                  name="catname"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="catdescription">Categorie Description</label>
+                <input
+                  class="form-control"
+                  id="catdescription"
+                  required
+                  v-model="categorie.catdescription"
+                  name="catdescription"
+                />
+              </div>
+
+              <button @click="saveCategorie()" class="btn btn-success">
+                Submit
+              </button>
+              <button @click="refreshCategorieList(); submittedSaveCat=false" class="btn btn-danger">
+                Cancel
+              </button>
+            </div>
         </div>
+        
       </div>
-      <div class="list row">
-        <div class="col-md-6">
+      <div class="d-flex flex-wrap">
+        <div class="col-md-4">
           <h4>Categories List</h4>
           <div
             type="button"
@@ -68,6 +100,7 @@
                 type="button"
                 class="btn btn-success m-1 p-0"
                 v-if="indexCat == currentIndexCat"
+                @click="submittedSaveTopic = true"
               >
                 Add Topic
               </button>
@@ -113,66 +146,27 @@
                 Submit
               </button>
             </div>
-            <div v-if="submittedSaveCat">
-              <div class="form-group">
-                <label for="catname">Categorie Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="catname"
-                  required
-                  v-model="categorie.catname"
-                  name="catname"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="catdescription">Categorie Description</label>
-                <input
-                  class="form-control"
-                  id="catdescription"
-                  required
-                  v-model="categorie.catdescription"
-                  name="catdescription"
-                />
-              </div>
-
-              <button @click="saveCategorie()" class="btn btn-success">
-                Submit
-              </button>
-            </div>
+            
             <div v-if="submittedSaveTopic">
               <div class="form-group">
-                <label for="catname">Categorie Name</label>
+                <label for="topicsubject">Topic subject</label>
                 <input
                   type="text"
                   class="form-control"
-                  id="catname"
+                  id="topicsubject"
                   required
-                  v-model="categorie.catname"
-                  name="catname"
+                  v-model="topic.topicsubject"
+                  name="topicsubject"
                 />
-              </div>
-
-              <div class="form-group">
-                <label for="catdescription">Categorie Description</label>
-                <input
-                  class="form-control"
-                  id="catdescription"
-                  required
-                  v-model="categorie.catdescription"
-                  name="catdescription"
-                />
-              </div>
-
-              <button @click="saveCategorie()" class="btn btn-success">
+              </div>            
+              <button @click="saveTopic()" class="btn btn-success">
                 Submit
               </button>
             </div>
           </div>
         </div>
 
-        <div class="col-md-6" v-if="currentCategorie">
+        <div class="col-md-4" v-if="currentCategorie">
           <h4>Topics List</h4>
           <div
             type="button"
@@ -195,17 +189,11 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click="submittedEditCat = true"
+                @click="submittedEditTopic = true"
               >
                 Edit
               </button>
-              <button
-                type="button"
-                class="btn btn-success m-1 p-0"
-                v-if="indexTopic == currentIndexTopic"
-              >
-                Add Topic
-              </button>
+              
               <button
                 type="button"
                 class="btn btn-danger m-1 p-0"
@@ -217,7 +205,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6" v-if="currentTopic">
+        <div class="col-md-4" v-if="currentTopic">
           <h4>Posts Thread</h4>
           <ul class="list-group">
             <li
@@ -264,6 +252,12 @@ export default {
         id: null,
         catname: "",
         catdescription: "",
+        userId: "",
+      },
+      topic: {
+        id: null,
+        topicsubject: "",
+        categorieId: "",
         userId: "",
       },
       post: {
@@ -392,8 +386,7 @@ export default {
 
     refreshTopicsList() {
       this.retrieveTopics();
-      this.currentTopic = null;
-      this.currentIndexTopic = -1;
+
     },
 
     setActiveTopic(topic, indexTopic) {
@@ -464,6 +457,25 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+    },
+    saveTopic(){
+      var data = {
+        topicsubject : this.topic.topicsubject,
+        categorieId: this.currentCategorie.id,
+        userId : user.id,
+      }
+      console.log(data);
+      TopicsDataService.create(data)
+      .then((response) => {
+          this.topic.id = response.data.id;
+          console.log(response.data);
+          this.submittedSaveTopic = false;
+          this.refreshTopicsList();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
     },
     savePost() {
       var data = {

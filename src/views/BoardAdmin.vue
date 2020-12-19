@@ -1,6 +1,8 @@
 <template>
-  <div class="jumbotron jumbotron-fluid">
-    <div class="d-flex flex-column bd-highlight mb-3">
+
+  <div class="jumbotron jumbotron-fluid">    
+    <div class="d-flex flex-column bd-highlight mb-3"
+    v-if="content == 'Admin Content.'">
       <div class="list row">
         <div class="col-md-8">
           <div class="input-group mb-3">
@@ -14,7 +16,7 @@
               <button
                 class="btn btn-outline-secondary"
                 type="button"
-                @click="searchCatname"
+                @click="validateCheck(); searchCatname; "
               >
                 Search
               </button>
@@ -22,13 +24,13 @@
           </div>
           <button
             class="m-3 btn btn-sm btn-success"
-            @click="refreshCategorieList()"
+            @click="validateCheck(); refreshCategorieList();"
           >
             Refresh Categorie list
           </button>
           <button
             class="m-3 btn btn-sm btn-info"
-            @click="submittedSaveCat = !submittedSaveCat"
+            @click="validateCheck(); submittedSaveCat = !submittedSaveCat;"
           >
             Add New Categorie
           </button>
@@ -60,12 +62,12 @@
               </div>
 
               <button
-                @click="editCategorie(currentCategorie.id)"
+                @click="validateCheck(); editCategorie(currentCategorie.id);"
                 class="btn btn-success m-1 p-0"
               >
                 Submit
               </button>
-              <button @click="submittedEditCat=false" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submittedEditCat=false;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
@@ -83,10 +85,30 @@
                   name="topicsubject"
                 />
               </div>            
-              <button @click="saveTopic()" class="btn btn-success m-1 p-0">
+              <button @click="validatecheck(); saveTopic();" class="btn btn-success m-1 p-0">
                 Submit
               </button>
-              <button @click="submittedSaveTopic=!submittedSaveTopic" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submittedSaveTopic=!submittedSaveTopic;" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+            <div  v-if="submittedEditTopic">
+              <h5 >Edit Topic in Active Categorie</h5>
+              <div class="form-group">
+                <label for="topicsubject">Topic subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="topicsubject"
+                  required
+                  v-model="topic.topicsubject"
+                  name="topicsubject"
+                />
+              </div>            
+              <button @click="validateCheck(); editTopic(currentTopic.id);" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="validateCheck(); submittedEditTopic=!submittedEditTopic;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
@@ -103,10 +125,10 @@
                   name="postcontent"
                 />
               </div>            
-              <button @click="savePost()" class="btn btn-success m-1 p-0">
+              <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
                 Submit
               </button>
-              <button @click="submittedSavePost=!submittedSavePost" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submittedSavePost=!submittedSavePost;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
@@ -138,10 +160,10 @@
                 />
               </div>
 
-              <button @click="saveCategorie()" class="btn btn-success m-1 p-0">
+              <button @click="validateCheck(); saveCategorie();" class="btn btn-success m-1 p-0">
                 Submit
               </button>
-              <button @click="submittedSaveCat=false" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submittedSaveCat=false;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
@@ -157,7 +179,7 @@
             :class="{ active: indexCat == currentIndexCat }"
             v-for="(categories, indexCat) in categories"
             :key="indexCat"
-            @click="setActiveCategorie(categories, indexCat); getUserNameCat(categories.userId);"
+            @click="validateCheck(); setActiveCategorie(categories, indexCat); getUserNameCat(categories.userId);"
           >
             <div class="card-header">
               <h5>{{ categories.catname }} </h5>
@@ -174,7 +196,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexCat == currentIndexCat"
-                @click="submittedEditCat = !submittedEditCat"
+                @click="validateCheck(); submittedEditCat = !submittedEditCat;"
               >
                 Edit
               </button>
@@ -182,7 +204,7 @@
                 type="button"
                 class="btn btn-success m-1 p-0"
                 v-if="indexCat == currentIndexCat"
-                @click="submittedSaveTopic = !submittedSaveTopic"
+                @click="validateCheck(); submittedSaveTopic = !submittedSaveTopic;"
               >
                 Add Topic
               </button>
@@ -190,7 +212,7 @@
                 type="button"
                 class="btn btn-danger m-1 p-0"
                 v-if="indexCat == currentIndexCat"
-                @click="removeCategorie(currentCategorie.id)"
+                @click="validateCheck(); removeCategorie(currentCategorie.id);"
               >
                 Delete
               </button>
@@ -207,7 +229,7 @@
             :class="{ active: indexTopic == currentIndexTopic }"
             v-for="(topics, indexTopic) in topics"
             :key="indexTopic"
-            @click="setActiveTopic(topics, indexTopic); getUserNameTopic(topics.userId)"
+            @click="validateCheck(); setActiveTopic(topics, indexTopic); getUserNameTopic(topics.userId)"
           >
             <div class="card-header">
               <h5>{{ topics.topicsubject }}</h5>
@@ -222,7 +244,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click="submittedEditTopic = !submittedEditTopic"
+                @click=" validateCheck(); submittedEditTopic = !submittedEditTopic;"
               >
                 Edit
               </button>
@@ -230,7 +252,7 @@
                 type="button"
                 class="btn btn-success m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click="submittedSavePost = !submittedSavePost"
+                @click="validateCheck(); submittedSavePost = !submittedSavePost;"
               >
                 Add
               </button>
@@ -239,7 +261,7 @@
                 type="button"
                 class="btn btn-danger m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click="removeTopic(currentTopic.id, currentCategorie.id)"
+                @click="validateCheck(); removeTopic(currentTopic.id, currentCategorie.id);"
               >
                 Delete
               </button>
@@ -254,7 +276,7 @@
               :class="{ active: indexPost == currentIndexPost }"
             v-for="(posts, indexPost) in posts"
               :key="indexPost"
-              @click="setActivePost(posts, indexPost); getUserNamePost(posts.userId)">
+              @click="validateCheck(); setActivePost(posts, indexPost); getUserNamePost(posts.userId)">
             <div class="card-header">
               <h6>{{ posts.postcontent }}</h6>
             </div>
@@ -268,7 +290,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexPost == currentIndexPost"
-                @click="submittedEditPost = !submittedEditPost"
+                @click="validateCheck(); submittedEditPost = !submittedEditPost;"
               >
                 Edit
               </button>
@@ -277,14 +299,14 @@
                 type="button"
                 class="btn btn-danger m-1 p-0"
                 v-if="indexPost == currentIndexPost"
-                @click="removePost(currentTopic.id, currentPost.id)"
+                @click="validateCheck(); removePost(currentTopic.id, currentPost.id);"
               >
                 Delete
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </div>        
+      </div>      
     </div>
   </div>
 </template>
@@ -300,6 +322,7 @@ export default {
   name: "Admin",
   data() {
     return {
+      content: "",
       indexCat: "",
       categories: [],
       currentCategorie: null,
@@ -338,12 +361,30 @@ export default {
       submittedEditCat: false,
       submittedDeleteCat: false,
       submittedSaveTopic: false,
+      submittedEditTopic: false,
       submittedSavePost: false,
       submittedEditPost: false,
     };
   },
 
   methods: {
+   validateCheck(){
+     console.log("click for validateCheck");
+        UserService.getAdminBoard().then(
+      (response) => {
+        this.content = response.data;        
+      },
+      (error) => { 
+        this.content =
+          (error.response && error.response.data) ||
+          error.message ||
+          error.toString();
+          this.$store.dispatch('auth/logout');
+          this.$router.push('/login');
+         
+      }
+    );
+  },
     getUserNameCat(id){
       UserService.getUserName(id)
       .then((response) => {
@@ -527,6 +568,24 @@ removeTopic(topicId, catId){
           console.log(e);
         });
     },
+    editTopic(topicId){
+      var data = {
+        topicsubject: this.topic.topicsubject,
+        categorieId: this.currentCategorie.id,
+        userId: user.id,
+      };
+      console.log(data);
+      var id = topicId;
+      TopicsDataService.update(id, data).then((response) => {
+          this.topic.id = response.data.id;
+          console.log(response.data);
+          this.submittedEditTopic = false;
+          this.retrieveTopics(this.currentCategorie.id);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     saveCategorie() {
       var data = {
         catname: this.categorie.catname,
@@ -601,15 +660,17 @@ removeTopic(topicId, catId){
   },
   mounted() {
     this.retrieveCategories();
-    UserService.getUserBoard().then(
+    UserService.getAdminBoard().then(
       (response) => {
-        this.content = response.data;
+        this.content = response.data;        
       },
-      (error) => {
+      (error) => { 
         this.content =
           (error.response && error.response.data) ||
           error.message ||
           error.toString();
+          localStorage.removeItem('user');
+          this.$router.push('/login');
       }
     );
   },

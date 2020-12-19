@@ -30,7 +30,7 @@
           </button>
           <button
             class="m-3 btn btn-sm btn-info"
-            @click="validateCheck(); submittedSaveCat = !submittedSaveCat;"
+            @click="validateCheck(); submittedSaveCat = !submittedSaveCat; currentCategorie= null; currentIndexCat= -1;"
           >
             Add New Categorie
           </button>
@@ -453,6 +453,7 @@ export default {
     },
 
     setActiveCategorie(categorie, indexCat) {
+      this.submittedAll();
       this.currentTopic = null;
       this.currentIndexTopic = -1;
       this.currentPost = null;
@@ -517,6 +518,7 @@ export default {
     },
 
         setActiveTopic(topic, indexTopic) {
+          this.submittedAll();
       this.currentTopic = topic;
       this.currentIndexTopic = indexTopic;
       var topID = this.currentTopic.id;
@@ -697,6 +699,7 @@ console.log(postId);
         });
     },
     setActivePost(post, indexPost) {
+      this.submittedAll();
       this.currentPost = post;
       this.currentIndexPost = indexPost;
   },

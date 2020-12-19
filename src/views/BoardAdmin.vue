@@ -132,6 +132,26 @@
                 Cancel
               </button>
             </div>
+            <div  v-if="submittedEditPost">
+              <h5 >Edit Current Active Post</h5>
+              <div class="form-group">
+                <label for="postcontent">Post Content</label>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  id="postcontent"
+                  required
+                  v-model="post.postcontent"
+                  name="postcontent"
+                />
+              </div>            
+              <button @click="validateCheck(); editPost(currentPost.id)" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="validateCheck(); submittedEditPost=!submittedEditPost;" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
           </div>
         <div class="col-md-6" v-if="submittedSaveCat">
           <h5 >Create a new Categorie</h5>
@@ -254,7 +274,7 @@
                 v-if="indexTopic == currentIndexTopic"
                 @click="validateCheck(); submittedSavePost = !submittedSavePost;"
               >
-                Add
+                Add Post
               </button>
 
               <button
@@ -290,7 +310,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexPost == currentIndexPost"
-                @click="validateCheck(); submittedEditPost = !submittedEditPost;"
+                @click="validateCheck();  submittedEditPost = !submittedEditPost;"
               >
                 Edit
               </button>
@@ -364,6 +384,7 @@ export default {
       submittedEditTopic: false,
       submittedSavePost: false,
       submittedEditPost: false,
+      submittedDeletePost: false,
     };
   },
 
@@ -502,8 +523,8 @@ export default {
       console.log(topID);
       this.retrievePosts(topID);
     },
-removeTopic(topicId, catId){
-  console.log(topicId);
+  removeTopic(topicId, catId){
+      console.log(topicId);
       var r = confirm("Press a button!");
       if (r == true) {
         console.log("You pressed OK!");
@@ -521,21 +542,35 @@ removeTopic(topicId, catId){
         });
         }else {
         console.log("You pressed ABORTED!");
-      }
+            }
       } else {
         console.log("You pressed CANCEL!");
       }
-    },
-    removeAllTopics() {
-      TopicsDataService.deleteAll()
+  },
+  removePost(topicId, postId){
+console.log(postId);
+      var r = confirm("Press a button!");
+      if (r == true) {
+        console.log("You pressed OK!");
+        var r2 = confirm("Press a button AGAIN!");
+        if (r2 == true) {
+          console.log("You pressed OK AGAIN!");
+        PostsDataService.delete(postId)
         .then((response) => {
           console.log(response.data);
-          this.refreshList();
+
+          this.retrievePosts(topicId);
         })
         .catch((e) => {
           console.log(e);
         });
-    },
+        }else {
+        console.log("You pressed ABORTED!");
+            }
+      } else {
+        console.log("You pressed CANCEL!");
+      }
+  },
     retrievePosts(topID) {
       var id = topID;
       console.log(id);
@@ -636,6 +671,25 @@ removeTopic(topicId, catId){
           this.post.id = response.data.id;
           console.log(response.data);
           this.submittedSavePost = false;
+          this.retrievePosts(this.currentTopic.id);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    editPost(postId){
+      var data = {
+        postcontent: this.post.postcontent,
+        topicId: this.currentTopic.id,
+        userId: user.id,
+      };
+      var id = postId;
+      console.log(data);
+      PostsDataService.update(id, data)
+        .then((response) => {
+          this.post.id = response.data.id;
+          console.log(response.data);
+          this.submittedEditPost = false;
           this.retrievePosts(this.currentTopic.id);
         })
         .catch((e) => {

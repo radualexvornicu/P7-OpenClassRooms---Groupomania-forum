@@ -67,7 +67,7 @@
               >
                 Submit
               </button>
-              <button @click="validateCheck(); submittedEditCat=false;" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submittedEditCat=!submittedEditCat;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
@@ -183,7 +183,7 @@
               <button @click="validateCheck(); saveCategorie();" class="btn btn-success m-1 p-0">
                 Submit
               </button>
-              <button @click="validateCheck(); submittedSaveCat=false;" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submittedSaveCat=!submittedSaveCat;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
@@ -379,341 +379,326 @@ export default {
       userNamePost: "",
       submittedSaveCat: false,
       submittedEditCat: false,
-      submittedDeleteCat: false,
       submittedSaveTopic: false,
       submittedEditTopic: false,
       submittedSavePost: false,
       submittedEditPost: false,
-      submittedDeletePost: false,
     };
   },
-
   methods: {
-   validateCheck(){
-     console.log("click for validateCheck");
-        UserService.getAdminBoard().then(
-      (response) => {
-        this.content = response.data;        
-      },
-      (error) => { 
-        this.content =
-          (error.response && error.response.data) ||
-          error.message ||
-          error.toString();
-          this.$store.dispatch('auth/logout');
-          this.$router.push('/login');
-         
-      }
-    );
-  },
-    getUserNameCat(id){
-      UserService.getUserName(id)
-      .then((response) => {
-        this.userNameCat = response.data.username;
-        console.log(response.data);
-      }).catch((e) => {
-          console.log(e);
-        });
-    },
-    getUserNameTopic(id){
-      UserService.getUserName(id)
-      .then((response) => {
-        this.userNameTopic = response.data.username;
-        console.log(response.data);
-      }).catch((e) => {
-          console.log(e);
-        });
-    },
-    submittedAll(){
-      this.submittedPost = false;
-      this.submittedSaveCat= false;
-      this.submittedEditCat= false;
-      this.submittedDeleteCat= false;
-      this.submittedSaveTopic = false;
-    },
-    retrieveCategories() {
-      CategoriesDataService.getAll()
+    validateCheck(){
+        console.log("click for validateCheck");
+           UserService.getAdminBoard().then(
+         (response) => {
+           this.content = response.data;        
+         },
+         (error) => { 
+           this.content =
+             (error.response && error.response.data) ||
+             error.message ||
+             error.toString();
+             this.$store.dispatch('auth/logout');
+             this.$router.push('/login');
+            
+         }
+       );
+},
+getUserNameCat(id){
+        UserService.getUserName(id)
         .then((response) => {
-          this.categories = response.data;
+          this.userNameCat = response.data.username;
           console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    refreshCategorieList() {
-      this.submittedAll();
-      this.retrieveCategories();
-      this.currentTopic = null;
-      this.currentIndexTopic = -1;
-      this.currentPost = null;
-      this.currentIndexPost = -1;
-      this.currentCategorie = null;
-      this.currentIndexCat = -1;
-    },
-
-    setActiveCategorie(categorie, indexCat) {
-      this.submittedAll();
-      this.currentTopic = null;
-      this.currentIndexTopic = -1;
-      this.currentPost = null;
-      this.currentIndexPost = -1;
-      this.currentCategorie = categorie;
-      this.currentIndexCat = indexCat;
-      var catID = this.currentCategorie.id;
-      console.log(catID);
-      this.retrieveTopics(catID);
-    },
-
-    removeCategorie(catId) {
-      console.log(catId);
-      var r = confirm("Press a button!");
-      if (r == true) {
-        console.log("You pressed OK!");
-        var r2 = confirm("Press a button AGAIN!");
-        if (r2 == true) {
-          console.log("You pressed OK AGAIN!");
-        CategoriesDataService.delete(catId)
-        .then((response) => {
-          console.log(response.data);
-
-          this.refreshCategorieList();
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-        }else {
-        console.log("You pressed ABORTED!");
-      }
-      } else {
-        console.log("You pressed CANCEL!");
-      }
-      /*   */
-    },
+        }).catch((e) => {
+            console.log(e);
+          });
+},
+getUserNameTopic(id){
+    UserService.getUserName(id)
+    .then((response) => {
+      this.userNameTopic = response.data.username;
+      console.log(response.data);
+    }).catch((e) => {
+        console.log(e);
+      });
+},
+submittedAllSwich() {
     
+},
 
-    searchCatname() {
-      CategoriesDataService.findByTitle(this.catname)
-        .then((response) => {
-          this.categories = response.data;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    retrieveTopics(catid) {
-      this.currentTopic = null;
-      this.currentIndexTopic = -1;
-      var id = catid;
-      console.log(id);
-      TopicsDataService.getAll(id)
-        .then((response) => {
-          this.topics = response.data;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-
-        setActiveTopic(topic, indexTopic) {
-          this.submittedAll();
-      this.currentTopic = topic;
-      this.currentIndexTopic = indexTopic;
-      var topID = this.currentTopic.id;
-      console.log(topID);
-      this.retrievePosts(topID);
-    },
-  removeTopic(topicId, catId){
-      console.log(topicId);
-      var r = confirm("Press a button!");
-      if (r == true) {
-        console.log("You pressed OK!");
-        var r2 = confirm("Press a button AGAIN!");
-        if (r2 == true) {
-          console.log("You pressed OK AGAIN!");
-        TopicsDataService.delete(topicId)
-        .then((response) => {
-          console.log(response.data);
-
-          this.retrieveTopics(catId);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-        }else {
-        console.log("You pressed ABORTED!");
-            }
-      } else {
-        console.log("You pressed CANCEL!");
-      }
-  },
-  removePost(topicId, postId){
-console.log(postId);
-      var r = confirm("Press a button!");
-      if (r == true) {
-        console.log("You pressed OK!");
-        var r2 = confirm("Press a button AGAIN!");
-        if (r2 == true) {
-          console.log("You pressed OK AGAIN!");
-        PostsDataService.delete(postId)
-        .then((response) => {
-          console.log(response.data);
-
-          this.retrievePosts(topicId);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-        }else {
-        console.log("You pressed ABORTED!");
-            }
-      } else {
-        console.log("You pressed CANCEL!");
-      }
-  },
-    retrievePosts(topID) {
-      var id = topID;
-      console.log(id);
-      PostsDataService.getAll(id)
-        .then((response) => {
-          this.posts = response.data;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    editCategorie(catId) {
-      var data = {
-        catname: this.categorie.catname,
-        catdescription: this.categorie.catdescription,
-        userId: user.id,
-      };
-      console.log(data);
-      var id = catId;
-      console.log(id);
-      CategoriesDataService.update(id, data)
-        .then((response) => {
-          this.categorie.id = response.data.id;
-          console.log(response.data);
-          this.submittedEditCat = false;
-          this.refreshCategorieList();
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    editTopic(topicId){
-      var data = {
-        topicsubject: this.topic.topicsubject,
-        categorieId: this.currentCategorie.id,
-        userId: user.id,
-      };
-      console.log(data);
-      var id = topicId;
-      TopicsDataService.update(id, data).then((response) => {
-          this.topic.id = response.data.id;
-          console.log(response.data);
-          this.submittedEditTopic = false;
-          this.retrieveTopics(this.currentCategorie.id);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    saveCategorie() {
-      var data = {
-        catname: this.categorie.catname,
-        catdescription: this.categorie.catdescription,
-        userId: user.id,
-      };
-      console.log(data);
-
-      CategoriesDataService.create(data)
-        .then((response) => {
-          this.categorie.id = response.data.id;
-          console.log(response.data);
-          this.submittedSaveCat = false;
-          this.refreshCategorieList();
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    saveTopic(){
-      var data = {
-        topicsubject : this.topic.topicsubject,
-        categorieId: this.currentCategorie.id,
-        userId : user.id,
-      }
-      console.log(data);
-      TopicsDataService.create(data)
+retrieveCategories() {
+    CategoriesDataService.getAll()
       .then((response) => {
-          this.topic.id = response.data.id;
-          console.log(response.data);
-          this.submittedSaveTopic = false;
-          this.retrieveTopics(this.currentCategorie.id);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-
-    },
-    savePost() {
-      var data = {
-        postcontent: this.post.postcontent,
-        topicId: this.currentTopic.id,
-        userId: user.id,
-      };
-      console.log(data);
-      PostsDataService.create(data)
-        .then((response) => {
-          this.post.id = response.data.id;
-          console.log(response.data);
-          this.submittedSavePost = false;
-          this.retrievePosts(this.currentTopic.id);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    editPost(postId){
-      var data = {
-        postcontent: this.post.postcontent,
-        topicId: this.currentTopic.id,
-        userId: user.id,
-      };
-      var id = postId;
-      console.log(data);
-      PostsDataService.update(id, data)
-        .then((response) => {
-          this.post.id = response.data.id;
-          console.log(response.data);
-          this.submittedEditPost = false;
-          this.retrievePosts(this.currentTopic.id);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    setActivePost(post, indexPost) {
-      this.submittedAll();
-      this.currentPost = post;
-      this.currentIndexPost = indexPost;
-  },
-
-  
-    getUserNamePost(id){
-      UserService.getUserName(id)
-      .then((response) => {
-        this.userNamePost = response.data.username;
+        this.categories = response.data;
         console.log(response.data);
-      }).catch((e) => {
-          console.log(e);
-        });
-    },
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+refreshCategorieList() {
+    this.submittedAllSwich();
+    this.retrieveCategories();
+    this.currentTopic = null;
+    this.currentIndexTopic = -1;
+    this.currentPost = null;
+    this.currentIndexPost = -1;
+    this.currentCategorie = null;
+    this.currentIndexCat = -1;
+},
+setActiveCategorie(categorie, indexCat) {
+        this.submittedAllSwich();
+    this.currentTopic = null;
+    this.currentIndexTopic = -1;
+    this.currentPost = null;
+    this.currentIndexPost = -1;
+    this.currentCategorie = categorie;
+    this.currentIndexCat = indexCat;
+    var catID = this.currentCategorie.id;
+    console.log(catID);
+    this.retrieveTopics(catID);
+},
+removeCategorie(catId) {
+    console.log(catId);
+    var r = confirm("Press a button!");
+    if (r == true) {
+      console.log("You pressed OK!");
+      var r2 = confirm("Press a button AGAIN!");
+      if (r2 == true) {
+        console.log("You pressed OK AGAIN!");
+      CategoriesDataService.delete(catId)
+      .then((response) => {
+        console.log(response.data);
+
+        this.refreshCategorieList();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+      }else {
+      console.log("You pressed ABORTED!");
+    }
+    } else {
+      console.log("You pressed CANCEL!");
+    }
+},
+searchCatname() {
+    CategoriesDataService.findByTitle(this.catname)
+      .then((response) => {
+        this.categories = response.data;
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+retrieveTopics(catid) {
+    this.currentTopic = null;
+    this.currentIndexTopic = -1;
+    var id = catid;
+    console.log(id);
+    TopicsDataService.getAll(id)
+      .then((response) => {
+        this.topics = response.data;
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+setActiveTopic(topic, indexTopic) {
+    this.submittedAllSwich();
+this.currentTopic = topic;
+this.currentIndexTopic = indexTopic;
+var topID = this.currentTopic.id;
+console.log(topID);
+this.retrievePosts(topID);
+},
+removeTopic(topicId, catId){
+    console.log(topicId);
+    var r = confirm("Press a button!");
+    if (r == true) {
+      console.log("You pressed OK!");
+      var r2 = confirm("Press a button AGAIN!");
+      if (r2 == true) {
+        console.log("You pressed OK AGAIN!");
+      TopicsDataService.delete(topicId)
+      .then((response) => {
+        console.log(response.data);
+
+        this.retrieveTopics(catId);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+      }else {
+      console.log("You pressed ABORTED!");
+          }
+    } else {
+      console.log("You pressed CANCEL!");
+    }
+},
+removePost(topicId, postId){
+    console.log(postId);
+          var r = confirm("Press a button!");
+          if (r == true) {
+            console.log("You pressed OK!");
+            var r2 = confirm("Press a button AGAIN!");
+            if (r2 == true) {
+              console.log("You pressed OK AGAIN!");
+            PostsDataService.delete(postId)
+            .then((response) => {
+              console.log(response.data);
+    
+              this.retrievePosts(topicId);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+            }else {
+            console.log("You pressed ABORTED!");
+                }
+        } else {
+            console.log("You pressed CANCEL!");
+          }
+},
+retrievePosts(topID) {
+    var id = topID;
+    console.log(id);
+    PostsDataService.getAll(id)
+      .then((response) => {
+        this.posts = response.data;
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+editCategorie(catId) {
+    var data = {
+      catname: this.categorie.catname,
+      catdescription: this.categorie.catdescription,
+      userId: user.id,
+    };
+    console.log(data);
+    var id = catId;
+    console.log(id);
+    CategoriesDataService.update(id, data)
+      .then((response) => {
+        this.categorie.id = response.data.id;
+        console.log(response.data);
+        this.submittedEditCat = false;
+        this.refreshCategorieList();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+editTopic(topicId){
+    var data = {
+      topicsubject: this.topic.topicsubject,
+      categorieId: this.currentCategorie.id,
+      userId: user.id,
+    };
+    console.log(data);
+    var id = topicId;
+    TopicsDataService.update(id, data).then((response) => {
+        this.topic.id = response.data.id;
+        console.log(response.data);
+        this.submittedEditTopic = false;
+        this.retrieveTopics(this.currentCategorie.id);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+saveCategorie() {
+    var data = {
+      catname: this.categorie.catname,
+      catdescription: this.categorie.catdescription,
+      userId: user.id,
+    };
+    console.log(data);
+    CategoriesDataService.create(data)
+      .then((response) => {
+        this.categorie.id = response.data.id;
+        console.log(response.data);
+        this.submittedSaveCat = false;
+        this.refreshCategorieList();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+saveTopic(){
+    var data = {
+      topicsubject : this.topic.topicsubject,
+      categorieId: this.currentCategorie.id,
+      userId : user.id,
+    }
+    console.log(data);
+    TopicsDataService.create(data)
+    .then((response) => {
+        this.topic.id = response.data.id;
+        console.log(response.data);
+        this.submittedSaveTopic = false;
+        this.retrieveTopics(this.currentCategorie.id);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+},
+savePost() {
+    var data = {
+      postcontent: this.post.postcontent,
+      topicId: this.currentTopic.id,
+      userId: user.id,
+    };
+    console.log(data);
+    PostsDataService.create(data)
+      .then((response) => {
+        this.post.id = response.data.id;
+        console.log(response.data);
+        this.submittedSavePost = false;
+        this.retrievePosts(this.currentTopic.id);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+editPost(postId){
+    var data = {
+      postcontent: this.post.postcontent,
+      topicId: this.currentTopic.id,
+      userId: user.id,
+    };
+    var id = postId;
+    console.log(data);
+    PostsDataService.update(id, data)
+      .then((response) => {
+        this.post.id = response.data.id;
+        console.log(response.data);
+        this.submittedEditPost = false;
+        this.retrievePosts(this.currentTopic.id);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+setActivePost(post, indexPost) {
+    this.submittedAllSwich();
+    this.currentPost = post;
+    this.currentIndexPost = indexPost;
+}, 
+getUserNamePost(id){
+    UserService.getUserName(id)
+    .then((response) => {
+      this.userNamePost = response.data.username;
+      console.log(response.data);
+    }).catch((e) => {
+        console.log(e);
+      });
+},
   },
   mounted() {
     this.retrieveCategories();

@@ -30,12 +30,130 @@
           </button>
           <button
             class="m-3 btn btn-sm btn-info"
-            @click="validateCheck(); submittedSaveCat = !submittedSaveCat; currentCategorie= null; currentIndexCat= -1;"
+            @click="validateCheck(); submitted = 5; currentCategorie= null; currentIndexCat= -1;"
           >
             Add New Categorie
           </button>
-          <div class="submit-form  col-md-6">
-            <div v-if="submittedEditCat">
+          <div v-switch="submitted">
+    <div v-case="0"></div>
+    <div v-case="1"><div  class="submit-form  col-md-6">
+              <h5 >Add Topic to Active Categorie</h5>
+              <div class="form-group">
+                <label for="topicsubject">Topic subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="topicsubject"
+                  required
+                  v-model="topic.topicsubject"
+                  name="topicsubject"
+                />
+              </div>            
+              <button @click="validatecheck(); saveTopic();" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+            </div>
+    <div v-case="2"><div  class="submit-form  col-md-6">
+              <h5 >Edit Topic in Active Categorie</h5>
+              <div class="form-group">
+                <label for="topicsubject">Topic subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="topicsubject"
+                  required
+                  v-model="topic.topicsubject"
+                  name="topicsubject"
+                />
+              </div>            
+              <button @click="validateCheck(); editTopic(currentTopic.id);" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+            </div>
+    <div v-case="3"><div  class="submit-form  col-md-6">
+              <h5 >Add Post to Active Topic</h5>
+              <div class="form-group">
+                <label for="postcontent">Post Content</label>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  id="postcontent"
+                  required
+                  v-model="post.postcontent"
+                  name="postcontent"
+                />
+              </div>            
+              <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+            </div>
+    <div v-case="4"><div  class="submit-form  col-md-6">
+              <h5 >Edit Current Active Post</h5>
+              <div class="form-group">
+                <label for="postcontent">Post Content</label>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  id="postcontent"
+                  required
+                  v-model="post.postcontent"
+                  name="postcontent"
+                />
+              </div>            
+              <button @click="validateCheck(); editPost(currentPost.id)" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+            </div>        
+    <div v-case="5"><div class=" submit-form col-md-6" >
+          <h5 >Create a new Categorie</h5>
+              <div class="form-group">
+                <label for="catname">Categorie Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="catname"
+                  required
+                  v-model="categorie.catname"
+                  name="catname"
+                />
+              </div>
+              <div class="form-group">
+                <label for="catdescription">Categorie Description</label>
+                <textarea 
+                type="text"
+                  class="form-control"
+                  id="catdescription"
+                  required
+                  v-model="categorie.catdescription"
+                  name="catdescription"
+                />
+              </div>
+
+              <button @click="validateCheck(); saveCategorie();" class="btn btn-success m-1 p-0">
+                Submit
+              </button>
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
+                Cancel
+              </button>
+            </div>
+            </div>
+  <div v-case="6"><div class="submit-form  col-md-6">
               <h5 >Edit Active Categorie</h5>
               <div class="form-group">
                 <label for="catname">Categorie Name</label>
@@ -67,126 +185,15 @@
               >
                 Submit
               </button>
-              <button @click="validateCheck(); submittedEditCat=!submittedEditCat;" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submitted= 0;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
-            
-            <div  v-if="submittedSaveTopic">
-              <h5 >Add Topic to Active Categorie</h5>
-              <div class="form-group">
-                <label for="topicsubject">Topic subject</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="topicsubject"
-                  required
-                  v-model="topic.topicsubject"
-                  name="topicsubject"
-                />
-              </div>            
-              <button @click="validatecheck(); saveTopic();" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submittedSaveTopic=!submittedSaveTopic;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            <div  v-if="submittedEditTopic">
-              <h5 >Edit Topic in Active Categorie</h5>
-              <div class="form-group">
-                <label for="topicsubject">Topic subject</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="topicsubject"
-                  required
-                  v-model="topic.topicsubject"
-                  name="topicsubject"
-                />
-              </div>            
-              <button @click="validateCheck(); editTopic(currentTopic.id);" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submittedEditTopic=!submittedEditTopic;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            <div  v-if="submittedSavePost">
-              <h5 >Add Post to Active Topic</h5>
-              <div class="form-group">
-                <label for="postcontent">Post Content</label>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="postcontent"
-                  required
-                  v-model="post.postcontent"
-                  name="postcontent"
-                />
-              </div>            
-              <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submittedSavePost=!submittedSavePost;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            <div  v-if="submittedEditPost">
-              <h5 >Edit Current Active Post</h5>
-              <div class="form-group">
-                <label for="postcontent">Post Content</label>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="postcontent"
-                  required
-                  v-model="post.postcontent"
-                  name="postcontent"
-                />
-              </div>            
-              <button @click="validateCheck(); editPost(currentPost.id)" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submittedEditPost=!submittedEditPost;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
             </div>
           </div>
-        <div class="col-md-6" v-if="submittedSaveCat">
-          <h5 >Create a new Categorie</h5>
-              <div class="form-group">
-                <label for="catname">Categorie Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="catname"
-                  required
-                  v-model="categorie.catname"
-                  name="catname"
-                />
-              </div>
-
-              <div class="form-group">
-                
-                <label for="catdescription">Categorie Description</label>
-                <textarea 
-                type="text"
-                  class="form-control"
-                  id="catdescription"
-                  required
-                  v-model="categorie.catdescription"
-                  name="catdescription"
-                />
-              </div>
-
-              <button @click="validateCheck(); saveCategorie();" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submittedSaveCat=!submittedSaveCat;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
+                      
+            
+        
         </div>
         
       </div>
@@ -216,7 +223,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexCat == currentIndexCat"
-                @click="validateCheck(); submittedEditCat = !submittedEditCat;"
+                @click="validateCheck(); submitted = 6;"
               >
                 Edit
               </button>
@@ -224,7 +231,7 @@
                 type="button"
                 class="btn btn-success m-1 p-0"
                 v-if="indexCat == currentIndexCat"
-                @click="validateCheck(); submittedSaveTopic = !submittedSaveTopic;"
+                @click="validateCheck(); submitted = 1;"
               >
                 Add Topic
               </button>
@@ -264,7 +271,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click=" validateCheck(); submittedEditTopic = !submittedEditTopic;"
+                @click=" validateCheck(); submitted = 2;"
               >
                 Edit
               </button>
@@ -272,7 +279,7 @@
                 type="button"
                 class="btn btn-success m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click="validateCheck(); submittedSavePost = !submittedSavePost;"
+                @click="validateCheck(); submitted = 3;"
               >
                 Add Post
               </button>
@@ -310,7 +317,7 @@
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexPost == currentIndexPost"
-                @click="validateCheck();  submittedEditPost = !submittedEditPost;"
+                @click="validateCheck();  submitted = 4;"
               >
                 Edit
               </button>
@@ -377,12 +384,7 @@ export default {
       userNameCat: "",
       userNameTopic: "",
       userNamePost: "",
-      submittedSaveCat: false,
-      submittedEditCat: false,
-      submittedSaveTopic: false,
-      submittedEditTopic: false,
-      submittedSavePost: false,
-      submittedEditPost: false,
+      submitted: 0,
     };
   },
   methods: {
@@ -421,9 +423,7 @@ getUserNameTopic(id){
         console.log(e);
       });
 },
-submittedAllSwich() {
-    
-},
+
 
 retrieveCategories() {
     CategoriesDataService.getAll()
@@ -436,7 +436,7 @@ retrieveCategories() {
       });
 },
 refreshCategorieList() {
-    this.submittedAllSwich();
+    this.submitted = 0;
     this.retrieveCategories();
     this.currentTopic = null;
     this.currentIndexTopic = -1;
@@ -446,7 +446,6 @@ refreshCategorieList() {
     this.currentIndexCat = -1;
 },
 setActiveCategorie(categorie, indexCat) {
-        this.submittedAllSwich();
     this.currentTopic = null;
     this.currentIndexTopic = -1;
     this.currentPost = null;
@@ -506,7 +505,7 @@ retrieveTopics(catid) {
       });
 },
 setActiveTopic(topic, indexTopic) {
-    this.submittedAllSwich();
+    
 this.currentTopic = topic;
 this.currentIndexTopic = indexTopic;
 var topID = this.currentTopic.id;
@@ -586,7 +585,7 @@ editCategorie(catId) {
       .then((response) => {
         this.categorie.id = response.data.id;
         console.log(response.data);
-        this.submittedEditCat = false;
+        this.submitted = 0;
         this.refreshCategorieList();
       })
       .catch((e) => {
@@ -622,7 +621,7 @@ saveCategorie() {
       .then((response) => {
         this.categorie.id = response.data.id;
         console.log(response.data);
-        this.submittedSaveCat = false;
+        this.submitted = 0;
         this.refreshCategorieList();
       })
       .catch((e) => {
@@ -686,7 +685,7 @@ editPost(postId){
       });
 },
 setActivePost(post, indexPost) {
-    this.submittedAllSwich();
+   
     this.currentPost = post;
     this.currentIndexPost = indexPost;
 }, 

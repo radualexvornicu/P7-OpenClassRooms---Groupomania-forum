@@ -24,13 +24,14 @@
           </div>
           <button
             class="m-3 btn btn-sm btn-success"
-            @click="validateCheck(); refreshCategorieList();"
+            @click="validateCheck(); refreshCategorieList()"
           >
             Refresh Categorie list
           </button>
           
-          <div class="submit-form  col-md-6">
-            <div  v-if="submittedSaveTopic">
+          <div v-switch="submitted">
+    <div v-case="0"></div>
+    <div v-case="1"><div  class="submit-form  col-md-6">
               <h5 >Add Topic to Active Categorie</h5>
               <div class="form-group">
                 <label for="topicsubject">Topic subject</label>
@@ -46,11 +47,12 @@
               <button @click="validatecheck(); saveTopic();" class="btn btn-success m-1 p-0">
                 Submit
               </button>
-              <button @click="validateCheck(); submittedSaveTopic=!submittedSaveTopic;" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
             </div>
-            <div  v-if="submittedEditTopic">
+            </div>
+    <div v-case="2"><div  class="submit-form  col-md-6">
               <h5 >Edit Topic in Active Categorie</h5>
               <div class="form-group">
                 <label for="topicsubject">Topic subject</label>
@@ -66,11 +68,11 @@
               <button @click="validateCheck(); editTopic(currentTopic.id);" class="btn btn-success m-1 p-0">
                 Submit
               </button>
-              <button @click="validateCheck(); submittedEditTopic=!submittedEditTopic;" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
-            </div>
-            <div  v-if="submittedSavePost">
+            </div></div>
+    <div v-case="3"><div  class="submit-form  col-md-6">
               <h5 >Add Post to Active Topic</h5>
               <div class="form-group">
                 <label for="postcontent">Post Content</label>
@@ -86,11 +88,11 @@
               <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
                 Submit
               </button>
-              <button @click="validateCheck(); submittedSavePost=!submittedSavePost;" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
-            </div>
-            <div  v-if="submittedEditPost">
+            </div></div>
+    <div v-case="4"><div  class="submit-form  col-md-6">
               <h5 >Edit Current Active Post</h5>
               <div class="form-group">
                 <label for="postcontent">Post Content</label>
@@ -106,12 +108,11 @@
               <button @click="validateCheck(); editPost(currentPost.id)" class="btn btn-success m-1 p-0">
                 Submit
               </button>
-              <button @click="validateCheck(); submittedEditPost=!submittedEditPost;" class="btn btn-danger m-1 p-0">
+              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
                 Cancel
               </button>
-            </div>
+            </div></div>
           </div>
-        
         </div>
         
       </div>
@@ -124,7 +125,7 @@
             :class="{ active: indexCat == currentIndexCat }"
             v-for="(categories, indexCat) in categories"
             :key="indexCat"
-            @click="validateCheck(); setActiveCategorie(categories, indexCat); getUserNameCat(categories.userId);"
+            @click.stop="validateCheck(); setActiveCategorie(categories, indexCat); getUserNameCat(categories.userId);"
           >
             <div class="card-header">
               <h5>{{ categories.catname }} </h5>
@@ -132,7 +133,6 @@
             </div>
             <div class="card-body" v-if="indexCat == currentIndexCat">
               <h6 class="card-title font-weight-bold">Categorie Description </h6>
-              
               <h6 class="card-text">{{ categories.catdescription }}</h6>
               <cite><h6>created by <strong>{{userNameCat}}</strong></h6></cite> 
             </div>
@@ -142,7 +142,7 @@
                 type="button"
                 class="btn btn-success m-1 p-0"
                 v-if="indexCat == currentIndexCat"
-                @click="validateCheck(); submittedSaveTopic = !submittedSaveTopic;"
+                @click="validateCheck(); submitted=1;"
               >
                 Add Topic
               </button>
@@ -160,7 +160,7 @@
             :class="{ active: indexTopic == currentIndexTopic }"
             v-for="(topics, indexTopic) in topics"
             :key="indexTopic"
-            @click="validateCheck(); setActiveTopic(topics, indexTopic); getUserNameTopic(topics.userId)"
+            @click.stop="validateCheck(); setActiveTopic(topics, indexTopic); getUserNameTopic(topics.userId)"
           >
             <div class="card-header">
               <h5>{{ topics.topicsubject }}</h5>
@@ -171,19 +171,22 @@
               <cite><h6>created by <strong>{{userNameTopic}}</strong></h6></cite>
             </div>
             <div>
+              <div v-show="sameUserTopic()">
               <button
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click=" validateCheck(); submittedEditTopic = !submittedEditTopic;"
+                @click=" validateCheck(); submitted=2;"
               >
                 Edit
               </button>
+              </div>
+              
               <button
                 type="button"
                 class="btn btn-success m-1 p-0"
                 v-if="indexTopic == currentIndexTopic"
-                @click="validateCheck(); submittedSavePost = !submittedSavePost;"
+                @click="validateCheck(); submitted = 3;"
               >
                 Add Post
               </button>
@@ -200,7 +203,7 @@
               :class="{ active: indexPost == currentIndexPost }"
             v-for="(posts, indexPost) in posts"
               :key="indexPost"
-              @click="validateCheck(); setActivePost(posts, indexPost); getUserNamePost(posts.userId)">
+              @click.stop="validateCheck(); setActivePost(posts, indexPost); getUserNamePost(posts.userId)">
             <div class="card-header">
               <h6>{{ posts.postcontent }}</h6>
             </div>
@@ -209,12 +212,12 @@
               <cite><h6 class="card-text">created at {{posts.updatedAt}}</h6></cite>
               <cite><h6>created by <strong>{{userNamePost}}</strong></h6></cite>
             </div>
-            <div v-show="sameUser()">
+            <div v-show="sameUserPost()">
               <button
                 type="button"
                 class="btn btn-warning m-1 p-0"
                 v-if="indexPost == currentIndexPost"
-                @click="validateCheck();  submittedEditPost = !submittedEditPost;"
+                @click="validateCheck();  submitted = 4;"
               >
                 Edit
               </button>
@@ -281,10 +284,13 @@ export default {
       userNameCat: "",
       userNameTopic: "",
       userNamePost: "",
-      submittedSaveTopic: false,
-      submittedEditTopic: false,
-      submittedSavePost: false,
-      submittedEditPost: false,
+      submitted: 0,
+     // submittedSaveTopic: false, 1
+     // submittedEditTopic: false, 2 
+      // submittedSavePost: false, 3
+      // submittedEditPost: false, 4
+      // submittedEditCat 6
+      
     };
   },
 
@@ -325,9 +331,6 @@ getUserNameTopic(id){
         console.log(e);
       });
 },
-submittedAllSwich() {
-    
-},
 
 retrieveCategories() {
     CategoriesDataService.getAll()
@@ -340,7 +343,7 @@ retrieveCategories() {
       });
 },
 refreshCategorieList() {
-    this.submittedAllSwich();
+    this.submitted = 0;
     this.retrieveCategories();
     this.currentTopic = null;
     this.currentIndexTopic = -1;
@@ -350,7 +353,6 @@ refreshCategorieList() {
     this.currentIndexCat = -1;
 },
 setActiveCategorie(categorie, indexCat) {
-        this.submittedAllSwich();
     this.currentTopic = null;
     this.currentIndexTopic = -1;
     this.currentPost = null;
@@ -410,7 +412,7 @@ retrieveTopics(catid) {
       });
 },
 setActiveTopic(topic, indexTopic) {
-    this.submittedAllSwich();
+    
 this.currentTopic = topic;
 this.currentIndexTopic = indexTopic;
 var topID = this.currentTopic.id;
@@ -465,7 +467,7 @@ editTopic(topicId){
     TopicsDataService.update(id, data).then((response) => {
         this.topic.id = response.data.id;
         console.log(response.data);
-        this.submittedEditTopic = false;
+        this.submitted = 0;
         this.retrieveTopics(this.currentCategorie.id);
       })
       .catch((e) => {
@@ -484,7 +486,7 @@ saveTopic(){
     .then((response) => {
         this.topic.id = response.data.id;
         console.log(response.data);
-        this.submittedSaveTopic = false;
+        this.submitted = 0;
         this.retrieveTopics(this.currentCategorie.id);
       })
       .catch((e) => {
@@ -503,7 +505,7 @@ savePost() {
       .then((response) => {
         this.post.id = response.data.id;
         console.log(response.data);
-        this.submittedSavePost = false;
+        this.submitted = 0;
         this.retrievePosts(this.currentTopic.id);
       })
       .catch((e) => {
@@ -522,7 +524,7 @@ editPost(postId){
       .then((response) => {
         this.post.id = response.data.id;
         console.log(response.data);
-        this.submittedEditPost = false;
+        this.submitted = 0;
         this.retrievePosts(this.currentTopic.id);
       })
       .catch((e) => {
@@ -530,7 +532,6 @@ editPost(postId){
       });
 },
 setActivePost(post, indexPost) {
-    this.submittedAllSwich();
     this.currentPost = post;
     this.currentIndexPost = indexPost;
 }, 
@@ -543,8 +544,16 @@ getUserNamePost(id){
         console.log(e);
       });
 },
-sameUser(){
+sameUserPost(){
       if(this.userNamePost == user.username){
+        return true;
+      }
+      else {
+        return false;
+      }
+  },
+sameUserTopic(){
+      if(this.userNameTopic == user.username){
         return true;
       }
       else {

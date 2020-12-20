@@ -16,12 +16,14 @@
               <button
                 class="btn btn-outline-secondary"
                 type="button"
-                @click="validateCheck(); searchCatname; "
+                @click="validateCheck(); page = 1; searchCatname; "
               >
                 Search
               </button>
             </div>
           </div>
+        
+          
           <button
             class="m-3 btn btn-sm btn-success"
             @click="validateCheck(); refreshCategorieList();"
@@ -190,13 +192,30 @@
               </button>
             </div>
             </div>
-          </div>
-                      
-            
-        
+          </div>                
         </div>
         
       </div>
+
+      <div class="col-md-12">
+      <div class="mb-3">
+        Items per Page:
+        <select v-model="pageSize" @change="handlePageSizeChange($event)">
+          <option v-for="size in pageSizes" :key="size" :value="size">
+            {{ size }}
+          </option>
+        </select>
+      </div>
+
+      <b-pagination
+        v-model="page"
+        :total-rows="count"
+        :per-page="pageSize"
+        prev-text="Prev"
+        next-text="Next"
+        @change="handlePageChange"
+      ></b-pagination>
+    </div>
       <div class="d-flex flex-wrap">
         <div class="col-md-4">
           <h4>Categories List</h4>
@@ -385,6 +404,13 @@ export default {
       userNameTopic: "",
       userNamePost: "",
       submitted: 0,
+      //
+      page: 1,
+      count: 0,
+      pageSize: 3,
+
+      pageSizes: [3, 6, 9],
+      //
     };
   },
   methods: {
@@ -423,18 +449,51 @@ getUserNameTopic(id){
         console.log(e);
       });
 },
+getRequestParams(catname, page, pageSize) {
+      let params = {};
 
+      if (catname) {
+        params["catname"] = catname;
+      }
+
+      if (page) {
+        params["page"] = page - 1;
+      }
+
+      if (pageSize) {
+        params["size"] = pageSize;
+      }
+
+      return params;
+    },
 
 retrieveCategories() {
-    CategoriesDataService.getAll()
+  const params = this.getRequestParams(
+        this.catname,
+        this.page,
+        this.pageSize
+      );
+    CategoriesDataService.getAll(params)
       .then((response) => {
-        this.categories = response.data;
-        console.log(response.data);
+         console.log(response.data);
+        this.categories = response.data.categories;
+        console.log(this.categories);
+        this.count = response.data.totalItems;
+        console.log(this.count);
       })
       .catch((e) => {
         console.log(e);
       });
 },
+ handlePageChange(value) {
+      this.page = value;
+      this.retrieveCategories();
+},
+handlePageSizeChange(event) {
+      this.pageSize = event.target.value;
+      this.page = 1;
+      this.retrieveCategories();
+    },
 refreshCategorieList() {
     this.submitted = 0;
     this.retrieveCategories();

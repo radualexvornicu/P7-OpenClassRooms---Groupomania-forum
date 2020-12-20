@@ -1,7 +1,9 @@
 import Vue from 'vue';
+import VSwitch from 'v-switch-case'
 import App from './App.vue';
 import { router } from './router';
 import store from './store';
+import { BootstrapVue } from 'bootstrap-vue';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import VeeValidate from 'vee-validate';
@@ -18,7 +20,8 @@ library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
 
 Vue.config.productionTip = false;
-
+Vue.use(BootstrapVue);
+Vue.use(VSwitch);
 Vue.use(VeeValidate);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 

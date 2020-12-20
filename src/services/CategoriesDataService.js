@@ -2,8 +2,8 @@ import http from "../http-common";
 const API_URL = 'http://localhost:8080/api/';
 
 class CategoriesDataService {
-  getAll() {
-    return http.get(API_URL + "categories" );
+  getAll(params) {
+    return http.get(API_URL + "categories", {params} );
   }
 
   get(id) {

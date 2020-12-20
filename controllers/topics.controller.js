@@ -2,6 +2,19 @@ const db = require("../models");
 const Topics = db.topics;
 const Op = db.Sequelize.Op;
 
+const getPagination = (page, size) => {
+  const limit = size ? +size : 3;
+  const offset = page ? page * limit : 0;
+
+  return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+  const { count: totalItems, rows: topics } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return { totalItems, topics, totalPages, currentPage };
+};
 // Create and Save a new Topics
 exports.create = (req, res) => {
   // Validate request
@@ -32,12 +45,14 @@ exports.create = (req, res) => {
 // Retrieve all Topics from the database with Categori Id.
 exports.findAll = (req, res) => {
     const categorieId = req.params.id;
-    console.log(categorieId);
+    console.log("categorie ID to search",categorieId);
+    const { page, size, topicsubject } = req.query;
     var condition = categorieId ? { categorieId: { [Op.like]: `%${categorieId}%` } } : null;
-  
-    Topics.findAll({ where: condition })
+    const { limit, offset } = getPagination(page, size);
+    Topics.findAndCountAll({ where: condition, limit, offset })
       .then(data => {
-        res.send(data);
+        const response = getPagingData(data, page, limit);
+        res.send(response);
       })
       .catch(err => {
         res.status(500).send({

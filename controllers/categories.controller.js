@@ -2,6 +2,19 @@ const db = require("../models");
 const Categories = db.categories;
 const Op = db.Sequelize.Op;
 
+const getPagination = (page, size) => {
+  const limit = size ? +size : 3;
+  const offset = page ? page * limit : 0;
+
+  return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+  const { count: totalItems, rows: categories } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return { totalItems, categories, totalPages, currentPage };
+};
 // Create and Save a new Categori
 exports.create = (req, res) => {
   // Validate request
@@ -31,12 +44,14 @@ exports.create = (req, res) => {
 
 // Retrieve all Categories from the database.
 exports.findAll = (req, res) => {
-    const catname = req.query.catname;
+  const { page, size, catname } = req.query;
     var condition = catname ? { catname: { [Op.like]: `%${catname}%` } } : null;
-  
-    Categories.findAll({ where: condition })
+    const { limit, offset } = getPagination(page, size);
+
+    Categories.findAndCountAll({ where: condition, limit, offset })
       .then(data => {
-        res.send(data);
+        const response = getPagingData(data, page, limit);
+        res.send(response);
       })
       .catch(err => {
         res.status(500).send({

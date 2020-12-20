@@ -16,7 +16,7 @@
               <button
                 class="btn btn-outline-secondary"
                 type="button"
-                @click="validateCheck(); page = 1; searchCatname; "
+                @click="validateCheck(); pageCat = 1; searchCatname; "
               >
                 Search
               </button>
@@ -200,20 +200,21 @@
       <div class="col-md-12">
       <div class="mb-3">
         Items per Page:
-        <select v-model="pageSize" @change="handlePageSizeChange($event)">
-          <option v-for="size in pageSizes" :key="size" :value="size">
-            {{ size }}
+        <select v-model="pageSizeCat" @change="PageSizeChangeCat($event)">
+          <option v-for="sizeCat in pageSizesCat" :key="sizeCat" :value="sizeCat">
+            {{ sizeCat }}
           </option>
         </select>
       </div>
 
       <b-pagination
-        v-model="page"
-        :total-rows="count"
-        :per-page="pageSize"
+        v-model="pageCat"
+        :total-rows="countCat"
+        :per-page="pageSizeCat"
+        size="sm"
         prev-text="Prev"
         next-text="Next"
-        @change="handlePageChange"
+        @change="PageChangeCat"
       ></b-pagination>
     </div>
       <div class="d-flex flex-wrap">
@@ -405,11 +406,11 @@ export default {
       userNamePost: "",
       submitted: 0,
       //
-      page: 1,
-      count: 0,
-      pageSize: 3,
+      pageCat: 1,
+      countCat: 0,
+      pageSizeCat: 3,
 
-      pageSizes: [3, 6, 9],
+      pageSizesCat: [3, 6, 9],
       //
     };
   },
@@ -449,19 +450,19 @@ getUserNameTopic(id){
         console.log(e);
       });
 },
-getRequestParams(catname, page, pageSize) {
+getRequestParams(catname, pageCat, pageSizeCat) {
       let params = {};
 
       if (catname) {
         params["catname"] = catname;
       }
 
-      if (page) {
-        params["page"] = page - 1;
+      if (pageCat) {
+        params["page"] = pageCat - 1;
       }
 
-      if (pageSize) {
-        params["size"] = pageSize;
+      if (pageSizeCat) {
+        params["size"] = pageSizeCat;
       }
 
       return params;
@@ -470,28 +471,28 @@ getRequestParams(catname, page, pageSize) {
 retrieveCategories() {
   const params = this.getRequestParams(
         this.catname,
-        this.page,
-        this.pageSize
+        this.pageCat,
+        this.pageSizeCat
       );
     CategoriesDataService.getAll(params)
       .then((response) => {
          console.log(response.data);
         this.categories = response.data.categories;
         console.log(this.categories);
-        this.count = response.data.totalItems;
-        console.log(this.count);
+        this.countCat = response.data.totalItems;
+        console.log(this.countCat);
       })
       .catch((e) => {
         console.log(e);
       });
 },
- handlePageChange(value) {
-      this.page = value;
+ PageChangeCat(value) {
+      this.pageCat = value;
       this.retrieveCategories();
 },
-handlePageSizeChange(event) {
-      this.pageSize = event.target.value;
-      this.page = 1;
+PageSizeChangeCat(event) {
+      this.pageSizeCat = event.target.value;
+      this.pageCat = 1;
       this.retrieveCategories();
     },
 refreshCategorieList() {

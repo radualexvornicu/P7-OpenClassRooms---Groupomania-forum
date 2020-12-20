@@ -1,7 +1,19 @@
 const db = require("../models");
 const Posts = db.posts;
 const Op = db.Sequelize.Op;
+const getPagination = (page, size) => {
+  const limit = size ? +size : 3;
+  const offset = page ? page * limit : 0;
 
+  return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+  const { count: totalItems, rows: posts } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return { totalItems, posts, totalPages, currentPage };
+};
 // Create and Save a new Posts
 exports.create = (req, res) => {
   // Validate request
@@ -32,13 +44,15 @@ exports.create = (req, res) => {
 
 // Retrieve all Posts from the database with Topic Id.
 exports.findAll = (req, res) => {
-  console.log(req.headers);
     const topicId = req.params.id;
+    console.log("topics id to get posts", topicId);
+    const { page, size, postcontent } = req.query;
     var condition = topicId ? { topicId: { [Op.like]: `%${topicId}%` } } : null;
-  
-    Posts.findAll({ where: condition })
+    const { limit, offset } = getPagination(page, size);
+    Posts.findAndCountAll({ where: condition , limit, offset })
       .then(data => {
-        res.send(data);
+        const response = getPagingData(data, page, limit);
+        res.send(response);
       })
       .catch(err => {
         res.status(500).send({

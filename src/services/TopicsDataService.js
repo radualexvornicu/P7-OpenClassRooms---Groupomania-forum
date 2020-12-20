@@ -2,8 +2,8 @@ import http from "../http-common";
 const API_URL = 'http://localhost:8080/api/';
 
 class TopicsDataService {
-  getAll(catid) {
-    return http.get(API_URL + `topics/catid/${catid}`);
+  getAll(params, id) {
+    return http.get(API_URL + `topics/catid/${id}`, {params});
   }
 
   get(id) {

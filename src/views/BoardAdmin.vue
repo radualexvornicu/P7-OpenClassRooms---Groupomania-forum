@@ -267,8 +267,28 @@
           </div>
           
         </div>
-
+        
         <div class="col-md-4" v-if="currentCategorie">
+          <div class="col-md-12">
+      <div class="mb-3">
+        Items per Page:
+        <select v-model="pageSizeTopic" @change="PageSizeChangeTopic($event)">
+          <option v-for="sizeTopic in pageSizesTopic" :key="sizeTopic" :value="sizeTopic">
+            {{ sizeTopic }}
+          </option>
+        </select>
+      </div>
+
+      <b-pagination
+        v-model="pageTopic"
+        :total-rows="countTopic"
+        :per-page="pageSizeTopic"
+        size="sm"
+        prev-text="Prev"
+        next-text="Next"
+        @change="PageChangeTopic"
+      ></b-pagination>
+    </div>
           <h4>Topics List</h4>
           <div
             type="button"
@@ -316,6 +336,26 @@
           </div>
         </div>
         <div class="col-md-4" v-if="currentCategorie">
+          <div class="col-md-12">
+      <div class="mb-3">
+        Items per Page:
+        <select v-model="pageSizePost" @change="PageSizeChangePost($event)">
+          <option v-for="sizePost in pageSizesPost" :key="sizePost" :value="sizePost">
+            {{ sizePost }}
+          </option>
+        </select>
+      </div>
+
+      <b-pagination
+        v-model="pagePost"
+        :total-rows="countPost"
+        :per-page="pageSizePost"
+        size="sm"
+        prev-text="Prev"
+        next-text="Next"
+        @change="PageChangePost"
+      ></b-pagination>
+    </div>
           <h4>Posts Thread</h4>
           <div
             type="button"
@@ -411,6 +451,18 @@ export default {
       pageSizeCat: 3,
 
       pageSizesCat: [3, 6, 9],
+
+      pageTopic: 1,
+      countTopic: 0,
+      pageSizeTopic: 3,
+
+      pageSizesTopic: [3, 6, 9],
+
+      pagePost: 1,
+      countPost: 0,
+      pageSizePost: 3,
+
+      pageSizesPost: [3, 6, 9],
       //
     };
   },
@@ -450,7 +502,8 @@ getUserNameTopic(id){
         console.log(e);
       });
 },
-getRequestParams(catname, pageCat, pageSizeCat) {
+// 1
+getRequestParamsCat(catname, pageCat, pageSizeCat) {
       let params = {};
 
       if (catname) {
@@ -467,9 +520,9 @@ getRequestParams(catname, pageCat, pageSizeCat) {
 
       return params;
     },
-
+// 2
 retrieveCategories() {
-  const params = this.getRequestParams(
+  const params = this.getRequestParamsCat(
         this.catname,
         this.pageCat,
         this.pageSizeCat
@@ -486,14 +539,124 @@ retrieveCategories() {
         console.log(e);
       });
 },
+// 3
  PageChangeCat(value) {
       this.pageCat = value;
       this.retrieveCategories();
 },
+// 4
 PageSizeChangeCat(event) {
       this.pageSizeCat = event.target.value;
       this.pageCat = 1;
       this.retrieveCategories();
+    },
+// 1
+getRequestParamsTopic(topicsubject, pageTopic, pageSizeTopic) {
+      let params = {};
+
+      if (topicsubject) {
+        params["topicsubject"] = topicsubject;
+      }
+
+      if (pageTopic) {
+        params["page"] = pageTopic - 1;
+      }
+
+      if (pageSizeTopic) {
+        params["size"] = pageSizeTopic;
+      }
+
+      return params;
+    },
+// 2
+retrieveTopics(catID) {
+  this.currentTopic = null;
+  this.currentIndexTopic = -1;
+  const params = this.getRequestParamsTopic(
+        this.topicsubject,
+        this.pageTopic,
+        this.pageSizeTopic
+      );
+    TopicsDataService.getAll(params, catID)
+      .then((response) => {
+         console.log(response.data);
+        this.topics = response.data.topics;
+        console.log(this.topics);
+        this.countTopic = response.data.totalItems;
+        console.log(this.countTopic);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+//  3
+ PageChangeTopic(value) {
+      this.pageTopic = value;
+      var catID = this.currentCategorie.id;
+    console.log(catID);
+    this.retrieveTopics(catID);
+},
+// 4
+PageSizeChangeTopic(event) {
+      this.pageSizeTopic = event.target.value;
+      this.pageTopic = 1;
+      var catID = this.currentCategorie.id;
+    console.log(catID);
+    this.retrieveTopics(catID);
+    },
+// 1
+getRequestParamsPost(postcontent, pagePost, pageSizePost) {
+      let params = {};
+
+      if (postcontent) {
+        params["postcontent"] = postcontent;
+      }
+
+      if (pagePost) {
+        params["page"] = pagePost - 1;
+      }
+
+      if (pageSizePost) {
+        params["size"] = pageSizePost;
+      }
+
+      return params;
+    },
+// 2
+retrievePosts(topicID) {
+  this.currentPost = null;
+  this.currentIndexPost = -1;
+  const params = this.getRequestParamsPost(
+        this.postcontent,
+        this.pagePost,
+        this.pageSizePost
+      );
+    PostsDataService.getAll(params, topicID)
+      .then((response) => {
+         console.log(response.data);
+        this.posts = response.data.posts;
+        console.log(this.posts);
+        this.countPost = response.data.totalItems;
+        console.log(this.countPost);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+// 3
+ PageChangePost(value) {
+      this.pagePost = value;
+      var topicID = this.currentTopic.id;
+    console.log(topicID);
+    this.retrievePosts(topicID);
+},
+// 4
+PageSizeChangePost(event) {
+      this.pageSizePost = event.target.value;
+      this.pagePost = 1;
+      var topicID = this.currentTopic.id;
+    console.log(topicID);
+    this.retrievePosts(topicID);
     },
 refreshCategorieList() {
     this.submitted = 0;
@@ -550,20 +713,7 @@ searchCatname() {
         console.log(e);
       });
 },
-retrieveTopics(catid) {
-    this.currentTopic = null;
-    this.currentIndexTopic = -1;
-    var id = catid;
-    console.log(id);
-    TopicsDataService.getAll(id)
-      .then((response) => {
-        this.topics = response.data;
-        console.log(response.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-},
+
 setActiveTopic(topic, indexTopic) {
     
 this.currentTopic = topic;
@@ -620,18 +770,7 @@ removePost(topicId, postId){
             console.log("You pressed CANCEL!");
           }
 },
-retrievePosts(topID) {
-    var id = topID;
-    console.log(id);
-    PostsDataService.getAll(id)
-      .then((response) => {
-        this.posts = response.data;
-        console.log(response.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-},
+
 editCategorie(catId) {
     var data = {
       catname: this.categorie.catname,

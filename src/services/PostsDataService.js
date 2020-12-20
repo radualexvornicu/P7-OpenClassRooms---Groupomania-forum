@@ -2,8 +2,8 @@ import http from "../http-common";
 const API_URL = 'http://localhost:8080/api/';
 
 class PostsDataService {
-  getAll(topid) {
-    return http.get(API_URL + `posts/topid/${topid}`);
+  getAll(params, id) {
+    return http.get(API_URL + `posts/topid/${id}`, {params});
   }
 
   get(id) {

@@ -15,7 +15,7 @@ export const router = new Router({
       component: Home
     },
     {
-      path: "/categorie/",
+      path: "/categorie/add",
       name: "add-categorie",
       component: () => import("../src/components/CategorieAdd")
     },

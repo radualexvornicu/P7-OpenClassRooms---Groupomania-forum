@@ -78,7 +78,7 @@
           <a
             class="m-3 btn btn-sm btn-info"
             @click="validateCheck(); "
-            :href="'/categorie/'"
+            :href="'/categorie/add'"
           >
             Add New Categorie
           </a>
@@ -92,14 +92,7 @@
           >
             Edit
           </a>
-          <button
-            type="button"
-            class="btn btn-success m-1 p-0"
-            v-if="currentCategorie"
-            @click="validateCheck(); submitted = 1;"
-          >
-            Add Post
-          </button>
+          
           <button
             type="button"
             class="btn btn-danger m-1 p-0"
@@ -169,7 +162,15 @@
     <b-pagination v-model="pageTopic" :total-rows="countTopic" :per-page="pageSizeTopic" size="sm" prev-text="Prev"
       next-text="Next" @change="PageChangeTopic"></b-pagination>
   </div>
-  <h4>{{currentCategorie.catname}} => Posts</h4>
+  <h4>{{currentCategorie.catname}} => Posts</h4> <a
+            type="button"
+            class="btn btn-success m-1 p-0"
+            v-if="currentCategorie"
+            @click="validateCheck();"
+            :href="'/post'"
+          >
+            Add Post
+          </a>
   <div class="card" :class="{ active: indexTopic == currentIndexTopic }"
     v-for="(topic, indexTopic) in topics" :key="indexTopic"
     @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">

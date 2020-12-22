@@ -103,11 +103,6 @@ export default {
   data() {
     return {
       role: "",
-      indexCat: "",
-      categories: [],
-      currentCategorie: null,
-      currentIndexCat: -1,
-      catname: "",
       categorie: {
         id: null,
         catname: "",
@@ -145,7 +140,7 @@ saveCategorie() {
 },
   },
   mounted(){
-    this.role = user.roles[1];
+    this.role = user.roles[0];
   }
 };
 </script>

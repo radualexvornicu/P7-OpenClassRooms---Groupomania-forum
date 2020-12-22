@@ -75,28 +75,30 @@
           >
             Refresh Categorie list
           </button>
-          <button
+          <a
             class="m-3 btn btn-sm btn-info"
-            @click="validateCheck(); refreshCategorieList(); submitted = 5;"
+            @click="validateCheck(); "
+            :href="'/categorie/'"
           >
             Add New Categorie
-          </button>
+          </a>
           <div class="flex-column">
-            <button
+            <a 
             type="button"
             class="btn btn-warning m-1 p-0"
             v-if="currentCategorie"
-            @click="validateCheck(); submitted = 6;"
+            
+            @click="validateCheck();"
           >
             Edit
-          </button>
+          </a>
           <button
             type="button"
             class="btn btn-success m-1 p-0"
             v-if="currentCategorie"
             @click="validateCheck(); submitted = 1;"
           >
-            Add Topic
+            Add Post
           </button>
           <button
             type="button"
@@ -106,169 +108,11 @@
           >
             Delete
           </button>
-          <div id="v-switch main" v-switch="submitted">
-    <div v-case="0"></div>
-    <div id="v-case 1" v-case="1"><div  class="submit-form  col-md-6">
-              <h5 >Add Topic to Active Categorie</h5>
-              <div class="form-group">
-                <label for="topicsubject">Topic subject</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="topicsubject"
-                  required
-                  v-model="topic.topicsubject"
-                  name="topicsubject"
-                />
-              </div>            
-              <button @click="validateCheck(); saveTopic();" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            </div>
-    <div id="v-case 2" v-case="2"><div  class="submit-form  col-md-6">
-              <h5 >Edit Topic in Active Categorie</h5>
-              <div class="form-group">
-                <label for="topicsubject">Topic subject</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="topicsubject"
-                  required
-                  v-model="topic.topicsubject"
-                  name="topicsubject"
-                />
-              </div>            
-              <button @click="validateCheck(); editTopic(currentTopic.id);" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            </div>
-    <div id="v-case 3" v-case="3"><div  class="submit-form  col-md-6">
-              <h5 >Add Post to Active Topic</h5>
-              <div class="form-group">
-                <label for="postcontent">Post Content</label>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="postcontent"
-                  required
-                  v-model="post.postcontent"
-                  name="postcontent"
-                />
-              </div>            
-              <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            </div>
-    <div id="v-case 4" v-case="4"><div  class="submit-form  col-md-6">
-              <h5 >Edit Current Active Post</h5>
-              <div class="form-group">
-                <label for="postcontent">Post Content</label>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="postcontent"
-                  required
-                  v-model="post.postcontent"
-                  name="postcontent"
-                />
-              </div>            
-              <button @click="validateCheck(); editPost(currentPost.id)" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            </div>        
-    <div id="v-case 5" v-case="5"><div class=" submit-form col-md-6" >
-          <h5 >Create a new Categorie</h5>
-              <div class="form-group">
-                <label for="catname">Categorie Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="catname"
-                  required
-                  v-model="categorie.catname"
-                  name="catname"
-                />
-              </div>
-              <div class="form-group">
-                <label for="catdescription">Categorie Description</label>
-                <textarea 
-                type="text"
-                  class="form-control"
-                  id="catdescription"
-                  required
-                  v-model="categorie.catdescription"
-                  name="catdescription"
-                />
-              </div>
-
-              <button @click="validateCheck(); saveCategorie();" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            </div>
-  <div id="v-case 6" v-case="6"><div class="submit-form  col-md-6">
-              <h5 >Edit Active Categorie</h5>
-              <div class="form-group">
-                <label for="catname">Categorie Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="catname"
-                  required
-                  v-model="categorie.catname"
-                  name="catname"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="catdescription">Categorie Description</label>
-                <textarea
-                type="text"
-                  class="form-control"
-                  id="catdescription"
-                  required
-                  v-model="categorie.catdescription"
-                  name="catdescription"
-                />
-              </div>
-
-              <button
-                @click="validateCheck(); editCategorie(currentCategorie.id);"
-                class="btn btn-success m-1 p-0"
-              >
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted= 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            </div>
-          </div>     
+  
              
       </div>      
-    </div>
-    </header>
-    <main class="row">
-      <section class="col-6" v-show="allCategorie">
+      <main >
+      <section  v-show="allCategorie">
   <div class=" m-0 p-0">
     <div class="mb-3">
       <select v-model="pageSizeTopic" @change="PageSizeChangeTopic($event)">
@@ -312,7 +156,7 @@
     </div>
   </div>
 </section>
-<section class="col-6" v-if="currentCategorie">
+<section  v-if="currentCategorie">
   <div class=" m-0 p-0">
     <div class="mb-3">
       <select v-model="pageSizeTopic" @change="PageSizeChangeTopic($event)">
@@ -358,6 +202,9 @@
 </section>
 
     </main>
+    </div>
+    </header>
+    
   </div>
 </template>
 
@@ -448,6 +295,7 @@ export default {
          }
        );
 },
+
 getUserNameCat(id){
         UserService.getUserName(id)
         .then((response) => {

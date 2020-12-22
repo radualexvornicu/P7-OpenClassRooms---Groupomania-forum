@@ -6,8 +6,10 @@ module.exports = app => {
     // Create a new Topic
     router.post("/", topics.create);
   
-    // Retrieve all Topics
-    router.get("/catid/:id", topics.findAll);
+    // Retrieve all Topics with Page
+    router.get("/catid/:id", topics.findAllPage);
+    // Retrieve all Topics with Page
+    router.get("/catid/", topics.findAll);
   
     // Retrieve a single Topic with id
     router.get("/:id",  topics.findOne);

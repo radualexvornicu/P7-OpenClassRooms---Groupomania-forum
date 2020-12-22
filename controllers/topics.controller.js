@@ -43,7 +43,7 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Topics from the database with Categori Id.
-exports.findAll = (req, res) => {
+exports.findAllPage = (req, res) => {
     const categorieId = req.params.id;
     console.log("categorie ID to search",categorieId);
     const { page, size, topicsubject } = req.query;
@@ -61,7 +61,22 @@ exports.findAll = (req, res) => {
         });
       });
 };
-
+exports.findAll = (req, res) => {
+  const { page, size, topicsubject } = req.query;
+  var condition = topicsubject ? { topicsubject: { [Op.like]: `%${topicsubject}%` } } : null;
+  const { limit, offset } = getPagination(page, size);
+  Topics.findAndCountAll({ where: condition, limit, offset })
+    .then(data => {
+      const response = getPagingData(data, page, limit);
+      res.send(response);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving topic."
+      });
+    });
+};
 // Find a single Topic with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;

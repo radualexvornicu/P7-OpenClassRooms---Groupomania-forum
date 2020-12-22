@@ -44,7 +44,7 @@
                   name="topicsubject"
                 />
               </div>            
-              <button @click="validatecheck(); saveTopic();" class="btn btn-success m-1 p-0">
+              <button @click="validateCheck(); saveTopic();" class="btn btn-success m-1 p-0">
                 Submit
               </button>
               <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">

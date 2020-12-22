@@ -21,6 +21,12 @@
     <ul>
       <li v-for="(role,index) in currentUser.roles" :key="index">{{role}}</li>
     </ul>
+    <button class="btn btn-primary">
+      Edit Account
+    </button>
+    <button class="btn btn-danger">
+      Delete Account
+    </button>
   </div>
 </template>
 

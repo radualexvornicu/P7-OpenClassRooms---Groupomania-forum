@@ -65,7 +65,7 @@ exports.findAll = (req, res) => {
   const { page, size, topicsubject } = req.query;
   var condition = topicsubject ? { topicsubject: { [Op.like]: `%${topicsubject}%` } } : null;
   const { limit, offset } = getPagination(page, size);
-  Topics.findAndCountAll({ where: condition, limit, offset })
+  Topics.findAndCountAll({ where: condition, limit, offset, order: [['updatedAt', 'DESC']]})
     .then(data => {
       const response = getPagingData(data, page, limit);
       res.send(response);

@@ -1,32 +1,21 @@
 <template>
 <div class="jumbotron jumbotron-fluid p-0">
 <div class="submit-form">
-    <div class="col-md-6" v-if="!submitted">
-      <h5 >Create a new Categorie</h5>
+    <div class="col-md-6" v-if="!submitted">      
+
+            <h5 >Add Post to Active Categorie</h5>
             <div class="form-group">
-              <label for="catname">Categorie Name</label>
-              <input
+              <label for="topicsubject">Post Content</label>
+              <textarea
                 type="text"
                 class="form-control"
-                id="catname"
+                id="topicsubject"
                 required
-                v-model="categorie.catname"
-                name="catname"
+                v-model="topic.topicsubject"
+                name="topicsubject"
               />
-            </div>
-            <div class="form-group">
-              <label for="catdescription">Categorie Description</label>
-              <textarea 
-              type="text"
-                class="form-control"
-                id="catdescription"
-                required
-                v-model="categorie.catdescription"
-                name="catdescription"
-              />
-            </div>
-
-            <button @click="saveCategorie();" class="btn btn-success m-1 p-0">
+            </div>            
+            <button @click=" saveTopic();" class="btn btn-success m-1 p-0">
               Submit
             </button>
             <div id="v-switch main" v-switch="role">
@@ -65,19 +54,23 @@
           
 </template>
 <script>
-import CategoriesDataService from "../services/CategoriesDataService";
+import TopicsDataService from "../services/TopicsDataService";
 const user = JSON.parse(localStorage.getItem("user"));
 
 
 export default {
-  name: "add-categorie",
+  name: "add-post",
   data() {
     return {
       role: "",
-      categorie: {
+     topics: [],
+      currentTopic: null,
+      currentIndexTopic: -1,
+      topicsubject: "",
+      topic: {
         id: null,
-        catname: "",
-        catdescription: "",
+        topicsubject: "",
+        categorieId: "",
         userId: "",
       },
       
@@ -87,27 +80,26 @@ export default {
   },
   methods: {
     // 1
-    newCategorie() {
+    new() {
       this.submitted = false;
-      this.categorie = {};
+      this.topic = {};
     },
-saveCategorie() {
+saveTopic(){
     var data = {
-      catname: this.categorie.catname,
-      catdescription: this.categorie.catdescription,
-      userId: user.id,
-    };
+      topicsubject : this.topic.topicsubject,
+      categorieId: this.currentCategorie.id,
+      userId : user.id,
+    }
     console.log(data);
-    CategoriesDataService.create(data)
-      .then((response) => {
-        this.categorie.id = response.data.id;
+    TopicsDataService.create(data)
+    .then((response) => {
+        this.topic.id = response.data.id;
         console.log(response.data);
-              this.submitted = true;
-              console.log(this.submitted);
       })
       .catch((e) => {
         console.log(e);
       });
+
 },
   },
   mounted(){

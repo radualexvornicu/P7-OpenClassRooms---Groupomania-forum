@@ -1,5 +1,8 @@
 <template>
 <div class="jumbotron jumbotron-fluid p-0">
+  <div v-if="currentCategorie">
+
+  </div>
 <div class="submit-form">
     <div class="col-md-6" v-if="!submitted">
       <h5 >Create a new Categorie</h5>
@@ -26,35 +29,63 @@
               />
             </div>
 
-            <button @click="saveCategorie();" class="btn btn-success m-1 p-0">
+            <button @click="editCategorie();" class="btn btn-success m-1 p-0">
               Submit
             </button>
             <div id="v-switch main" v-switch="role">
               <div id="v-case 1" v-case="'ROLE_ADMIN'">
-                <router-link :to="'/admin'" class="btn btn-danger m-1 p-0">Cancel</router-link>
+                <a
+            class="btn btn-danger m-1 p-0"
+            :href="'/admin'"
+          >
+            Cancel
+          </a>
               </div>
               <div id="v-case 1" v-case="'ROLE_MODERATOR'">
-                <router-link :to="'/mod'" class="btn btn-danger m-1 p-0">Cancel</router-link>
+                <a
+            class="btn btn-danger m-1 p-0"
+            :href="'/mod'"
+          >
+            Cancel
+          </a>
               </div>
               <div v-default>
-                <router-link :to="'/user'" class="btn btn-danger m-1 p-0">Cancel</router-link>
+                <a
+            class="btn btn-danger m-1 p-0"
+            :href="'/user'"
+          >
+            Cancel
+          </a>
               </div>
             </div>
            
           </div>
     <div class="col-md-6" v-else>
-      <h4>You submitted successfully!</h4>
-      <button class="btn btn-success" @click="newCategorie()">Add</button>
+      <h4>You edited successfully!</h4>
       <div id="v-switch main" v-switch="role">
               <div id="v-case 1" v-case="'ROLE_ADMIN'">
-               <router-link :to="'/admin'" class="btn btn-danger m-1 p-0">Cancel</router-link>
-                
+                <a
+            class="btn btn-danger m-1 p-0"
+            :href="'/admin'"
+          >
+            Back
+          </a>
               </div>
               <div id="v-case 1" v-case="'ROLE_MODERATOR'">
-                <router-link :to="'/mod'" class="btn btn-danger m-1 p-0">Cancel</router-link>
+                <a
+            class="btn btn-danger m-1 p-0"
+            :href="'/mod'"
+          >
+            Back
+          </a>
               </div>
               <div v-default>
-                <router-link :to="'/user'" class="btn btn-danger m-1 p-0">Cancel</router-link>
+                <a
+            class="btn btn-danger m-1 p-0"
+            :href="'/user'"
+          >
+            Back
+          </a>
               </div>
             </div>
            
@@ -70,7 +101,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 
 export default {
-  name: "add-categorie",
+  name: "edit-categorie",
   data() {
     return {
       role: "",
@@ -91,19 +122,25 @@ export default {
       this.submitted = false;
       this.categorie = {};
     },
-saveCategorie() {
+    /*
+    getCategorie(id){
+
+    }, */
+editCategorie(catId) {
     var data = {
       catname: this.categorie.catname,
       catdescription: this.categorie.catdescription,
       userId: user.id,
     };
     console.log(data);
-    CategoriesDataService.create(data)
+    var id = catId;
+    console.log(id);
+    CategoriesDataService.update(id, data)
       .then((response) => {
         this.categorie.id = response.data.id;
         console.log(response.data);
-              this.submitted = true;
-              console.log(this.submitted);
+        this.submitted = 0;
+        this.refreshCategorieList();
       })
       .catch((e) => {
         console.log(e);
@@ -112,6 +149,7 @@ saveCategorie() {
   },
   mounted(){
     this.role = user.roles[0];
+    this.getCategorie(this.$route.params.id);
   }
 };
 </script>

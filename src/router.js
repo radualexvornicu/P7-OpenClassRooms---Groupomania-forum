@@ -14,10 +14,21 @@ export const router = new Router({
       name: 'home',
       component: Home
     },
+    
     {
       path: "/categorie/add",
       name: "add-categorie",
       component: () => import("../src/components/CategorieAdd")
+    },
+    {
+      path: "/post/add/:id",
+      name: "add-post",
+      component: () => import("../src/components/TopicAdd")
+    },
+    {
+      path: "/categorie/:id",
+      name: "edit-categorie",
+      component: () => import("../src/components/CategorieEdit")
     },
     {
       path: '/home',

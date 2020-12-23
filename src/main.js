@@ -4,6 +4,7 @@ import App from './App.vue';
 import { router } from './router';
 import store from './store';
 import { BootstrapVue } from 'bootstrap-vue';
+import VueMoment from 'vue-moment'; 
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import VeeValidate from 'vee-validate';
@@ -18,7 +19,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
-
+Vue.use(VueMoment);
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(VSwitch);

@@ -109,7 +109,7 @@
     v-for="(topic, indexTopic) in topics" :key="indexTopic"
     @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
     <div class="card-header">
-      <p class="card-text">{{ topic.topicsubject }}</p>
+      <p class="card-text">{{ topic.topicsubject }}</p> <p>{{topic.updatedAt | moment("from", "now", true)}}</p>
       <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
             <div  >
       <h6>By:{{userNameTopic}}</h6>

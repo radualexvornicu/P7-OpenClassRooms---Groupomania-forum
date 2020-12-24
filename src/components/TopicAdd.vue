@@ -3,9 +3,9 @@
 <div class="submit-form">
     <div class="col-md-6" v-if="!submitted">      
 
-            <h5 >Add Post to Active Categorie</h5>
+            <h5 >Start Topic Discution in <br> "{{categorie.catname}}" - Categorie</h5>
             <div class="form-group">
-              <label for="topicsubject">Post Content</label>
+              <label for="topicsubject">Topic Content</label>
               <textarea
                 type="text"
                 class="form-control"
@@ -33,7 +33,7 @@
           </div>
     <div class="col-md-6" v-else>
       <h4>You submitted successfully!</h4>
-      <button class="btn btn-success" @click="newCategorie()">Add</button>
+      <button class="btn btn-success" @click="newInfo();">Add</button>
       <div id="v-switch main" v-switch="role">
               <div id="v-case 1" v-case="'ROLE_ADMIN'">
                <router-link :to="'/admin'" class="btn btn-danger m-1 p-0">Cancel</router-link>
@@ -55,11 +55,13 @@
 </template>
 <script>
 import TopicsDataService from "../services/TopicsDataService";
+import CategoriesDataService from "../services/CategoriesDataService";
+
 const user = JSON.parse(localStorage.getItem("user"));
 
 
 export default {
-  name: "add-post",
+  name: "add-topic",
   data() {
     return {
       role: "",
@@ -75,19 +77,37 @@ export default {
       },
       
       submitted: false,
+      categorie: {
+        id: null,
+        catname: "",
+        catdescription: "",
+        userId: "",
+      },
       
     };
   },
   methods: {
     // 1
-    new() {
+    newInfo() {
       this.submitted = false;
       this.topic = {};
     },
+    getCategorie(id){
+      console.log("edit cat id:", id);
+      CategoriesDataService.get(id)
+      .then((response) => {
+         console.log(response.data);
+        this.categorie = response.data;
+        console.log(this.categorie);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    }, 
 saveTopic(){
     var data = {
       topicsubject : this.topic.topicsubject,
-      categorieId: this.currentCategorie.id,
+      categorieId: this.categorie.id,
       userId : user.id,
     }
     console.log(data);
@@ -95,6 +115,7 @@ saveTopic(){
     .then((response) => {
         this.topic.id = response.data.id;
         console.log(response.data);
+        this.submitted = true;
       })
       .catch((e) => {
         console.log(e);
@@ -104,6 +125,7 @@ saveTopic(){
   },
   mounted(){
     this.role = user.roles[0];
+    this.getCategorie(this.$route.params.id);
   }
 };
 </script>

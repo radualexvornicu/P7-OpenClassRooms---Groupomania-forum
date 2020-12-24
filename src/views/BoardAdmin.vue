@@ -44,7 +44,7 @@
 <ul class="list-group">
         <li  class="list-group-item list-group-item-action list-group-item-success p-1 m-1 rounded"
         @click="validateCheck(); showAllTopics();  ">
-          All Topic Posts
+          All Discution Topics
         </li>
       </ul>
         </div>
@@ -157,9 +157,9 @@
     <b-pagination v-model="pageTopic" :total-rows="countTopic" :per-page="pageSizeTopic" size="sm" prev-text="Prev"
       next-text="Next" @change="PageChangeTopic"></b-pagination>
   </div>
-  <h4>{{currentCategorie.catname}} => Posts</h4> 
-  <router-link :to="'/post/add'+ currentCategorie.id" class="btn btn-success m-1 p-0"
-  >Add Post</router-link>  
+  <h4>{{currentCategorie.catname}} => Discution Topics</h4> 
+  <router-link :to="'/topic/add/'+ currentCategorie.id" class="btn btn-success m-1 p-0"
+  >Start Topic Discution</router-link>  
 
   <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
     v-for="(topic, indexTopic) in topics" :key="indexTopic"

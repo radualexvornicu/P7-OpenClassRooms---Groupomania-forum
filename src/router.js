@@ -21,6 +21,11 @@ export const router = new Router({
       component: () => import("../src/components/CategorieAdd")
     },
     {
+      path: "/topic/:id",
+      name: "topic",
+      component: () => import("../src/components/Topic")
+    },
+    {
       path: "/topic/add/:id",
       name: "add-topic",
       component: () => import("../src/components/TopicAdd")

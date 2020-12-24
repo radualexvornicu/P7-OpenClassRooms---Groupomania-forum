@@ -20,8 +20,8 @@
         :total-rows="countCat"
         :per-page="pageSizeCat"
         size="sm"
-        prev-text="Prev"
-        next-text="Next"
+        first-number
+        last-number
         @change="PageChangeCat"
           > </b-pagination>          
       </div>
@@ -129,7 +129,7 @@
       </button>
     </div>
             <div>
-            <router-link :to="'/post'+ currentTopic.id" class="badge badge-info"
+            <router-link :to="'/topic/'+ currentTopic.id" class="badge badge-info"
             >View Comments <span
              class="badge badge-danger badge-pill">{{countPost}}
              </span>

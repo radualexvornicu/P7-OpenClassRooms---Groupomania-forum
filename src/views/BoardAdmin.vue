@@ -44,7 +44,7 @@
 <ul class="list-group">
         <li  class="list-group-item list-group-item-action list-group-item-success p-1 m-1 rounded"
         @click="validateCheck(); showAllTopics();  ">
-          Show All Posts
+          All Topic Posts
         </li>
       </ul>
         </div>
@@ -78,7 +78,8 @@
           <router-link :to="'/categorie/add'" class="btn btn-sm btn-info">Add New Categorie</router-link>
           
         <div v-if="currentCategorie" class="flex-column">
-          <router-link :to="'/categorie/' + currentCategorie.id" class="badge badge-warning">Edit 2</router-link>
+          <router-link :to="'/categorie/' + currentCategorie.id" class="btn btn-warning m-0 p-0">
+          Edit</router-link>
           <button
             type="button"
             class="btn btn-danger m-1 p-0"
@@ -104,22 +105,26 @@
     <b-pagination v-model="pageTopic" :total-rows="countTopic" :per-page="pageSizeTopic" size="sm" prev-text="Prev"
       next-text="Next" @change="PageChangeTopic"></b-pagination>
   </div>
-  <h4>All Posts</h4>
-  <div class="card" :class="{ active: indexTopic == currentIndexTopic }"
+  <h4>All Discution Topics</h4>
+  <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
     v-for="(topic, indexTopic) in topics" :key="indexTopic"
     @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
-    <div class="card-header">
-      <p class="card-text">{{ topic.topicsubject }}</p> <p>{{topic.updatedAt | moment("from", "now", true)}}</p>
-      <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
+    <div class="card-header  ">
+      <div class="d-flex justify-content-between align-items-center">
+      <p class="card-text font-weight-bold">{{ topic.topicsubject }}</p> 
+      <p>{{topic.updatedAt | moment("from", "now", true)}}</p>
+     
+      </div>
+       <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
             <div  >
       <h6>By:{{userNameTopic}}</h6>
       
-      <router-link type="button" class="badge badge-warning m-1 p-0"
-        @click=" validateCheck(); submitted = 2;">
+      <router-link :to="'/post/edit' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
+        @click=" validateCheck(); ">
         Edit
       </router-link>  
-      <button type="button" class="badge badge-danger m-1 p-0" 
-        @click="validateCheck(); removeTopic(currentTopic.id, currentCategorie.id);">
+      <button  class="btn btn-danger m-0 p-0" 
+        @click="validateCheck(); removeTopic(currentTopic.id);">
         Delete
       </button>
     </div>
@@ -156,31 +161,42 @@
   <router-link :to="'/post/add'+ currentCategorie.id" class="btn btn-success m-1 p-0"
   >Add Post</router-link>  
 
-  <div class="card" :class="{ active: indexTopic == currentIndexTopic }"
+  <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
     v-for="(topic, indexTopic) in topics" :key="indexTopic"
     @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
-    <div class="card-header">
-      <div class="card-body  p-0">
-      <p class="card-text">{{ topic.topicsubject }}</p>            
-    </div>
-    </div>
-    <div d-flex justify-content-between align-items-center>
+    <div class="card-header  ">
+      <div class="d-flex justify-content-between align-items-center">
+      <p class="card-text font-weight-bold">{{ topic.topicsubject }}</p> 
+      <p>{{topic.updatedAt | moment("from", "now", true)}}</p>
+     
+      </div>
+       <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
+            <div  >
       <h6>By:{{userNameTopic}}</h6>
-      <span class="badge badge-danger badge-pill">{{countPost}}</span>
-      <button type="button" class="btn btn-warning m-1 p-0" v-if="indexTopic == currentIndexTopic"
-        @click=" validateCheck(); submitted = 2;">
+      
+      <router-link :to="'/post/edit' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
+        @click=" validateCheck(); ">
         Edit
-      </button>
-      <button type="button" class="btn btn-success m-1 p-0" v-if="indexTopic == currentIndexTopic"
-        @click="validateCheck(); submitted = 3;">
-        Add Post
-      </button>
-
-      <button type="button" class="btn btn-danger m-1 p-0" v-if="indexTopic == currentIndexTopic"
-        @click="validateCheck(); removeTopic(currentTopic.id, currentCategorie.id);">
+      </router-link>  
+      <button  class="btn btn-danger m-0 p-0" 
+        @click="validateCheck(); removeTopic(currentTopic.id);">
         Delete
       </button>
     </div>
+            <div>
+            <router-link :to="'/post'+ currentTopic.id" class="badge badge-info"
+            >View Comments <span
+             class="badge badge-danger badge-pill">{{countPost}}
+             </span>
+             </router-link>    
+            
+      
+            </div>
+            
+            
+    </div>
+    </div>
+    
   </div>
 </section>
     </main>
@@ -479,6 +495,9 @@ setActiveCategorie(categorie, indexCat) {
     var catID = this.currentCategorie.id;
     console.log(catID);
     this.allCategorie = false;
+    this.pageTopic = 1;
+      this.countTopic = 0;
+      this.pageSizeTopic = 6;
     this.retrieveTopics(catID);
 },
 removeCategorie(catId) {
@@ -535,9 +554,13 @@ removeTopic(topicId, catId){
       TopicsDataService.delete(topicId)
       .then((response) => {
         console.log(response.data);
-
-        this.retrieveTopics(catId);
-        this.showAllTopics();
+        if(catId){
+          this.retrieveTopics(catId);
+        } else{
+          this.showAllTopics();
+        }
+        
+        
       })
       .catch((e) => {
         console.log(e);

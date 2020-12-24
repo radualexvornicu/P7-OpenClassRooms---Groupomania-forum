@@ -1,11 +1,11 @@
 <template>
 <div class="jumbotron jumbotron-fluid p-0">
-  <div v-if="currentCategorie">
+  <div v-if="!submitted">
 
   </div>
 <div class="submit-form">
     <div class="col-md-6" v-if="!submitted">
-      <h5 >Create a new Categorie</h5>
+      <h5 >Edit Categorie id: {{categorie.id}}</h5>
             <div class="form-group">
               <label for="catname">Categorie Name</label>
               <input
@@ -64,28 +64,14 @@
       <h4>You edited successfully!</h4>
       <div id="v-switch main" v-switch="role">
               <div id="v-case 1" v-case="'ROLE_ADMIN'">
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/admin'"
-          >
-            Back
-          </a>
+               <router-link :to="'/admin'" class="btn btn-info m-1 p-1">Back</router-link>
+                
               </div>
               <div id="v-case 1" v-case="'ROLE_MODERATOR'">
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/mod'"
-          >
-            Back
-          </a>
+                <router-link :to="'/mod'" class="btn btn-info m-1 p-1">Back</router-link>
               </div>
               <div v-default>
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/user'"
-          >
-            Back
-          </a>
+                <router-link :to="'/user'" class="btn btn-info m-1 p-1">Back</router-link>
               </div>
             </div>
            
@@ -122,25 +108,31 @@ export default {
       this.submitted = false;
       this.categorie = {};
     },
-    /*
+    
     getCategorie(id){
-
-    }, */
-editCategorie(catId) {
+      console.log("edit cat id:", id);
+      CategoriesDataService.get(id)
+      .then((response) => {
+         console.log(response.data);
+        this.categorie = response.data;
+        console.log(this.categorie);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    }, 
+editCategorie() {
     var data = {
       catname: this.categorie.catname,
       catdescription: this.categorie.catdescription,
       userId: user.id,
     };
     console.log(data);
-    var id = catId;
-    console.log(id);
+    var id = this.categorie.id
     CategoriesDataService.update(id, data)
       .then((response) => {
-        this.categorie.id = response.data.id;
         console.log(response.data);
-        this.submitted = 0;
-        this.refreshCategorieList();
+        this.submitted = true;
       })
       .catch((e) => {
         console.log(e);

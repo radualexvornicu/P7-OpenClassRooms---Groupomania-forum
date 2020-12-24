@@ -1,33 +1,20 @@
 <template>
 <div class="jumbotron jumbotron-fluid p-0">
-  
 <div class="submit-form">
     <div class="col-md-6" v-if="!submitted">
-      <h5 >Edit Categorie id: {{categorie.id}}</h5>
+      <h5 >Edit Topic id: {{topic.id}}</h5>
             <div class="form-group">
-              <label for="catname">Categorie Name</label>
+              <label for="topicsubject">Topic subject</label>
               <input
                 type="text"
                 class="form-control"
-                id="catname"
+                id="topicsubject"
                 required
-                v-model="categorie.catname"
-                name="catname"
+                v-model="topic.topicsubject"
+                name="topicsubject"
               />
-            </div>
-            <div class="form-group">
-              <label for="catdescription">Categorie Description</label>
-              <textarea 
-              type="text"
-                class="form-control"
-                id="catdescription"
-                required
-                v-model="categorie.catdescription"
-                name="catdescription"
-              />
-            </div>
-
-            <button @click="editCategorie();" class="btn btn-success m-1 p-0">
+            </div>            
+            <button @click=" editTopic();" class="btn btn-success m-1 p-0">
               Submit
             </button>
             <div id="v-switch main" v-switch="role">
@@ -80,55 +67,51 @@
           
 </template>
 <script>
-import CategoriesDataService from "../services/CategoriesDataService";
+import TopicsDataService from "../services/TopicsDataService";
 const user = JSON.parse(localStorage.getItem("user"));
 
 
 export default {
-  name: "edit-categorie",
+  name: "edit-topic",
   data() {
     return {
       role: "",
-      categorie: {
+      topic: {
         id: null,
-        catname: "",
-        catdescription: "",
+        topicsubject: "",
+        categorieId: "",
         userId: "",
       },
-      
       submitted: false,
       
     };
   },
   methods: {
     // 1
-    newCategorie() {
-      this.submitted = false;
-      this.categorie = {};
-    },
     
-    getCategorie(id){
+    getTopic(id){
       console.log("edit cat id:", id);
-      CategoriesDataService.get(id)
+      TopicsDataService.get(id)
       .then((response) => {
          console.log(response.data);
-        this.categorie = response.data;
-        console.log(this.categorie);
+        this.topic = response.data;
+        console.log(this.topic);
+        console.log("i got everything");
       })
       .catch((e) => {
         console.log(e);
       });
     }, 
-editCategorie() {
+editTopic(){
     var data = {
-      catname: this.categorie.catname,
-      catdescription: this.categorie.catdescription,
-      userId: user.id,
+      topicsubject: this.topic.topicsubject,
+      categorieId: this.topic.categoriId,
+      userId: this.topic.userId,
     };
     console.log(data);
-    var id = this.categorie.id
-    CategoriesDataService.update(id, data)
-      .then((response) => {
+    var id = this.topic.id;
+    TopicsDataService.update(id, data).then((response) => {
+        
         console.log(response.data);
         this.submitted = true;
       })
@@ -139,7 +122,7 @@ editCategorie() {
   },
   mounted(){
     this.role = user.roles[0];
-    this.getCategorie(this.$route.params.id);
+    this.getTopic(this.$route.params.id);
   }
 };
 </script>

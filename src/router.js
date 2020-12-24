@@ -21,9 +21,14 @@ export const router = new Router({
       component: () => import("../src/components/CategorieAdd")
     },
     {
-      path: "/post/add/:id",
-      name: "add-post",
+      path: "/topic/add/:id",
+      name: "add-topic",
       component: () => import("../src/components/TopicAdd")
+    },
+    {
+      path: "/topic/edit/:id",
+      name: "edit-topic",
+      component: () => import("../src/components/TopicEdit")
     },
     {
       path: "/categorie/:id",

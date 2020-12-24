@@ -119,7 +119,7 @@
             <div  >
       <h6>By:{{userNameTopic}}</h6>
       
-      <router-link :to="'/post/edit' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
+      <router-link :to="'/topic/edit/' + currentTopic.id"  class="btn btn-warning mr-1 p-0"
         @click=" validateCheck(); ">
         Edit
       </router-link>  
@@ -174,7 +174,7 @@
             <div  >
       <h6>By:{{userNameTopic}}</h6>
       
-      <router-link :to="'/post/edit' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
+      <router-link :to="'/topic/edit/' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
         @click=" validateCheck(); ">
         Edit
       </router-link>  

@@ -20,8 +20,8 @@
         :total-rows="countCat"
         :per-page="pageSizeCat"
         size="sm"
-        first-number
-        last-number
+        prev-text="Prev"
+        next-text="Next"
         @change="PageChangeCat"
           > </b-pagination>          
       </div>
@@ -112,7 +112,7 @@
     <div class="card-header  ">
       <div class="d-flex justify-content-between align-items-center">
       <p class="card-text font-weight-bold">{{ topic.topicsubject }}</p> 
-      <p>{{topic.updatedAt | moment("from", "now", true)}}</p>
+      <p>{{topic.updatedAt | moment("from", "now")}}</p>
      
       </div>
        <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
@@ -167,7 +167,7 @@
     <div class="card-header  ">
       <div class="d-flex justify-content-between align-items-center">
       <p class="card-text font-weight-bold">{{ topic.topicsubject }}</p> 
-      <p>{{topic.updatedAt | moment("from", "now", true)}}</p>
+      <p>{{topic.updatedAt | moment("from", "now")}}</p>
      
       </div>
        <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
@@ -184,7 +184,7 @@
       </button>
     </div>
             <div>
-            <router-link :to="'/post'+ currentTopic.id" class="badge badge-info"
+            <router-link :to="'/topic/'+ currentTopic.id" class="badge badge-info"
             >View Comments <span
              class="badge badge-danger badge-pill">{{countPost}}
              </span>

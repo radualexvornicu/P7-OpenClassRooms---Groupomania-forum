@@ -36,6 +36,11 @@ export const router = new Router({
       component: () => import("../src/components/TopicEdit")
     },
     {
+      path: "/post/edit/:id",
+      name: "edit-post",
+      component: () => import("../src/components/PostEdit")
+    },
+    {
       path: "/categorie/:id",
       name: "edit-categorie",
       component: () => import("../src/components/CategorieEdit")

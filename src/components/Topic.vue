@@ -1,19 +1,30 @@
 <template>
-<div class="jumbotron jumbotron-fluid d-flex flex-row justify-content-center">
+<div class="jumbotron jumbotron-fluid d-flex flex-row justify-content-center p-0">
 <section class="col-6">
   <div class="card border-success mb-3">
     <div class="card-header  ">
+      <div id="v-switch main" v-switch="role">
+              <div id="v-case 1" v-case="'ROLE_ADMIN'">
+               <router-link :to="'/admin'" class="btn btn-danger rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
+                
+              </div>
+              <div id="v-case 1" v-case="'ROLE_MODERATOR'">
+                <router-link :to="'/mod'" class="btn btn-danger rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
+              </div>
+              <div v-default>
+                <router-link :to="'/user'" class="btn btn-danger rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
+              </div>
+            </div>
       <div class="d-flex justify-content-between align-items-center">
       <h4 class="card-text font-weight-bold">{{ topic.topicsubject }}</h4> 
       <cite>
-      <p>{{topic.updatedAt | moment("from", "now")}}</p>
+      <p class="text-sm-right">{{topic.updatedAt | moment("from", "now")}}</p>
       </cite>
       </div>
        <div  class="card-body  p-0 d-flex justify-content-between align-items-center">
             <div  >
       <h6>By:{{userNameTopic}}</h6>
-      
-        
+
       
     </div>
             
@@ -32,14 +43,47 @@
       </select>
     </div>
 
-    <b-pagination v-model="pagePost" :total-rows="countPost" :per-page="pageSizePost"
-     @change="PageChangePost"></b-pagination>
+    <b-pagination v-model="pagePost" :total-rows="countPost" :per-page="pageSizePost" size="sm" prev-text="Prev"
+      next-text="Next" @change="PageChangePost"></b-pagination>
   </div>
-  
-  <h4>Response Posts</h4>
+  <div v-if="!reply">
+    <div class="form-group">
+              <label for="postcontent">Post a Comment</label>
+              <textarea
+                type="text"
+                class="form-control"
+                id="postcontent"
+                required
+                v-model="post.postcontent"
+                name="postcontent"
+              />
+            </div>            
+            <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
+              Submit
+            </button>
+  </div>
+  <div v-if="reply">
+  <div class="form-group">
+              <label for="replypost">Reply a Comment</label>
+              <textarea
+                type="text"
+                class="form-control"
+                id="replypost"
+                required
+                v-model="replypost"
+                name="replypost"
+              />
+            </div>            
+            <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
+              Submit
+            </button>
+            <button @click="validateCheck(); reply = false;" class="btn btn-danger m-1 p-0">
+              Cancel
+            </button>
+  </div>
   <ul>
   
-  <li class="list-group-item list-group-item-warning "
+  <li class="list-group-item list-group-item-warning mb-2 rounded "
     v-for="(post, indexPost) in posts" :key="indexPost"
     @click="validateCheck(); setActivePost(posts, indexPost); getUserNamePost(post.userId)">
     <div class="d-flex justify-content-between align-items-center">
@@ -48,21 +92,24 @@
     </div>
     <div class="" v-if="indexPost == currentIndexPost">
         <h6>created by <strong>{{userNamePost}}</strong></h6>
-     
-    </div>
-    <div>
-      <button type="button" class="btn btn-warning m-1 p-0" v-if="indexPost == currentIndexPost"
+      <button type="button" class="btn btn-success m-1 p-0" v-show="sameUserPost()"
+        @click="validateCheck(); replyPost(currentPost[currentIndexPost].postcontent);">
+        Reply
+      </button>
+      <router-link :to="'/post/edit/' + currentPost[currentIndexPost].id" class="btn btn-warning m-1 p-0" 
         @click="validateCheck();">
         Edit
-      </button>
+      </router-link>
 
-      <button type="button" class="btn btn-danger m-1 p-0" v-if="indexPost == currentIndexPost"
-        @click="validateCheck(); removePost(currentPost.id);">
+      <button type="button" class="btn btn-danger m-1 p-0" 
+        @click="validateCheck(); removePost(topic.id, currentPost[currentIndexPost].id);">
         Delete
       </button>
     </div>
+    
   </li>
   </ul>
+  
 </section>
 
 </div>
@@ -75,13 +122,14 @@ import PostsDataService from "../services/PostsDataService";
 import TopicsDataService from "../services/TopicsDataService";
 const user = JSON.parse(localStorage.getItem("user"));
 
-
 export default {
   name: "edit-topic",
   data() {
     return {
       content:"",
       role: "",
+      reply: false,
+      replypost: "",
       topic: {
         id: null,
         topicsubject: "",
@@ -131,6 +179,7 @@ getUserNameTopic(id){
     UserService.getUserName(id)
     .then((response) => {
       this.userNameTopic = response.data.username;
+      console.log(this.user.username, "loged user");
       console.log(response.data);
     }).catch((e) => {
         console.log(e);
@@ -213,12 +262,73 @@ getUserNamePost(id){
       });
 },
 setActivePost(post, indexPost) {
-   
+
     this.currentPost = post;
+    console.log(this.currentPost, "current Post");
     this.currentIndexPost = indexPost;
+    console.log(this.currentPost[this.currentIndexPost]);
 }, 
+savePost() {
+    var data = {
+      postcontent: this.replypost,
+      topicId: this.topic.id,
+      userId: user.id,
+    };
+    console.log(data);
+    PostsDataService.create(data)
+      .then((response) => {
+        this.post.id = response.data.id;
+        console.log(response.data);
+        this.reply = false;
+        this.retrievePosts(this.topic.id);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
+sameUserPost(){
+      if(this.userNamePost == user.username){
+        return true;
+      }
+      else {
+        return false;
+      }
   },
+  replyPost(data){
+    console.log(data, "its my data");
+    this.replypost = " '' " +  this.userNamePost + " said: " + data + " '' " + "\n";
+    console.log(this.replypost);
+    this.reply = true;
+  },
+  removePost(topicId, postId){
+    console.log(postId);
+          var r = confirm("Press a button!");
+          if (r == true) {
+            console.log("You pressed OK!");
+            var r2 = confirm("Press a button AGAIN!");
+            if (r2 == true) {
+              console.log("You pressed OK AGAIN!");
+            PostsDataService.delete(postId)
+            .then((response) => {
+              console.log(response.data);
+    
+              this.retrievePosts(topicId);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+            }else {
+            console.log("You pressed ABORTED!");
+                }
+        } else {
+            console.log("You pressed CANCEL!");
+          }
+},
+
+  },
+  
   mounted(){
+   
     this.role = user.roles[0];
     this.getTopic(this.$route.params.id);
     this.retrievePosts(this.$route.params.id);
@@ -227,7 +337,7 @@ setActivePost(post, indexPost) {
 </script>
 
 <style >
-.list-group li {
+ li {
   cursor: pointer;
 }
 

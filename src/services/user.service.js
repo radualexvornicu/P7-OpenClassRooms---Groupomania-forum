@@ -1,4 +1,6 @@
 import axios from 'axios';
+import http from "../http-common";
+
 import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:8080/api/content/';
@@ -10,7 +12,14 @@ class UserService {
   getUserName(id){
     return axios.get(API_URL + `name/${id}`);
   }
-
+  update(id, data) {
+    return http.put(API_URL + `profile/${id}`, data);
+  }
+ 
+  delete(id){
+    return axios.delete(API_URL + `profile/${id}`);
+  }
+  
   getUserBoard() {
     return axios.get(API_URL + 'user', { headers: authHeader() });
   }

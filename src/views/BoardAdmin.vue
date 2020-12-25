@@ -117,7 +117,13 @@
       </div>
        <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
             <div  >
-      <h6>By:{{userNameTopic}}</h6>
+      <h6>By:
+        <router-link :to="'/profile/' + currentTopic.userId">
+          
+        
+        {{userNameTopic}}
+        </router-link>
+        </h6>
       
       <router-link :to="'/topic/edit/' + currentTopic.id"  class="btn btn-warning mr-1 p-0"
         @click=" validateCheck(); ">
@@ -172,7 +178,12 @@
       </div>
        <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
             <div  >
-      <h6>By:{{userNameTopic}}</h6>
+      <h6>By:<router-link :to="'/profile/' + currentTopic.userId">
+          
+        
+        {{userNameTopic}}
+        </router-link>
+        </h6>
       
       <router-link :to="'/topic/edit/' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
         @click=" validateCheck(); ">

@@ -19,28 +19,14 @@
             </button>
             <div id="v-switch main" v-switch="role">
               <div id="v-case 1" v-case="'ROLE_ADMIN'">
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/admin'"
-          >
-            Cancel
-          </a>
+               <router-link :to="'/admin'" class="btn btn-info m-1 p-1">Cancel</router-link>
+                
               </div>
               <div id="v-case 1" v-case="'ROLE_MODERATOR'">
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/mod'"
-          >
-            Cancel
-          </a>
+                <router-link :to="'/mod'" class="btn btn-info m-1 p-1">Cancel</router-link>
               </div>
               <div v-default>
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/user'"
-          >
-            Cancel
-          </a>
+                <router-link :to="'/user'" class="btn btn-info m-1 p-1">Cancel</router-link>
               </div>
             </div>
            
@@ -113,7 +99,7 @@ editTopic(){
     TopicsDataService.update(id, data).then((response) => {
         
         console.log(response.data);
-        this.submitted = true;
+        this.submitted = false;
       })
       .catch((e) => {
         console.log(e);

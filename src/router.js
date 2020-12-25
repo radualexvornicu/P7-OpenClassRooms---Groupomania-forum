@@ -60,25 +60,31 @@ export const router = new Router({
     {
       path: '/profile',
       name: 'profile',
-      // lazy-loaded
+      
       component: () => import('./views/Profile.vue')
+    },
+    {
+      path: '/profile/:id',
+      name: 'profile-view',
+      
+      component: () => import('./views/ProfileView.vue')
     },
     {
       path: '/admin',
       name: 'admin',
-      // lazy-loaded
+      
       component: () => import('./views/BoardAdmin.vue')
     },
     {
       path: '/mod',
       name: 'moderator',
-      // lazy-loaded
+      
       component: () => import('./views/BoardModerator.vue')
     },
     {
       path: '/user',
       name: 'user',
-      // lazy-loaded
+      
       component: () => import('./views/BoardUser.vue')
     },
   ]

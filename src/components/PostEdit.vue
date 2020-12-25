@@ -2,10 +2,10 @@
 <div class="jumbotron jumbotron-fluid p-0">
 <div class="submit-form">
     <div class="col-md-6" v-if="!submitted">
-      <h5 >Edit Topic id: {{topic.id}}</h5>
-           <div class="form-group">
-              <label for="postcontent">Post Content</label>
-              <textarea
+      <h5 >Edit Post id: {{post.id}}</h5>
+            <div class="form-group">
+              <label for="postcontent">Edit Post here</label>
+              <input
                 type="text"
                 class="form-control"
                 id="postcontent"
@@ -14,34 +14,19 @@
                 name="postcontent"
               />
             </div>            
-            <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
+            <button @click=" editPost();" class="btn btn-success m-1 p-0">
               Submit
             </button>
-          </div>
             <div id="v-switch main" v-switch="role">
               <div id="v-case 1" v-case="'ROLE_ADMIN'">
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/admin'"
-          >
-            Cancel
-          </a>
+               <router-link :to="'/admin'" class="btn btn-info m-1 p-1">Cancel</router-link>
+                
               </div>
               <div id="v-case 1" v-case="'ROLE_MODERATOR'">
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/mod'"
-          >
-            Cancel
-          </a>
+                <router-link :to="'/mod'" class="btn btn-info m-1 p-1">Cancel</router-link>
               </div>
               <div v-default>
-                <a
-            class="btn btn-danger m-1 p-0"
-            :href="'/user'"
-          >
-            Cancel
-          </a>
+                <router-link :to="'/user'" class="btn btn-info m-1 p-1">Cancel</router-link>
               </div>
             </div>
            
@@ -68,19 +53,20 @@
           
 </template>
 <script>
-import TopicsDataService from "../services/TopicsDataService";
+import PostsDataService from "../services/PostsDataService";
+
 const user = JSON.parse(localStorage.getItem("user"));
 
 
 export default {
-  name: "edit-topic",
+  name: "edit-post",
   data() {
     return {
       role: "",
-      topic: {
+      post: {
         id: null,
-        topicsubject: "",
-        categorieId: "",
+        postcontent: "",
+        topicId: "",
         userId: "",
       },
       submitted: false,
@@ -90,28 +76,27 @@ export default {
   methods: {
     // 1
     
-    getTopic(id){
-      console.log("edit cat id:", id);
-      TopicsDataService.get(id)
+    getPost(id){
+      
+      PostsDataService.get(id)
       .then((response) => {
          console.log(response.data);
-        this.topic = response.data;
-        console.log(this.topic);
-        console.log("i got everything");
+        this.post = response.data;
+        
       })
       .catch((e) => {
         console.log(e);
       });
     }, 
-editTopic(){
+editPost(){
     var data = {
-      topicsubject: this.topic.topicsubject,
-      categorieId: this.topic.categoriId,
-      userId: this.topic.userId,
+      postcontent: this.post.postcontent,
+      topicId: this.post.topicId,
+      userId: this.post.userId,
     };
     console.log(data);
-    var id = this.topic.id;
-    TopicsDataService.update(id, data).then((response) => {
+    var id = this.post.id;
+    PostsDataService.update(id, data).then((response) => {
         
         console.log(response.data);
         this.submitted = true;
@@ -123,7 +108,7 @@ editTopic(){
   },
   mounted(){
     this.role = user.roles[0];
-    this.getTopic(this.$route.params.id);
+    this.getPost(this.$route.params.id);
   }
 };
 </script>

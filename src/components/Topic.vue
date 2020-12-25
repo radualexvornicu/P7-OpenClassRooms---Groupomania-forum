@@ -23,7 +23,12 @@
       </div>
        <div  class="card-body  p-0 d-flex justify-content-between align-items-center">
             <div  >
-      <h6>By:{{userNameTopic}}</h6>
+      <h6>By:<router-link :to="'/profile/' + currentTopic.userId">
+          
+        
+        {{userNameTopic}}
+        </router-link>
+        </h6>
 
       
     </div>
@@ -91,7 +96,12 @@
       <p>{{post.updatedAt | moment("from", "now")}}</p>
     </div>
     <div class="" v-if="indexPost == currentIndexPost">
-        <h6>created by <strong>{{userNamePost}}</strong></h6>
+        <h6>By: <router-link :to="'/profile/' + currentPost[currentIndexPost].userId">
+          
+        
+        {{userNameTopic}}
+        </router-link>
+        </h6>
       <button type="button" class="btn btn-success m-1 p-0" v-show="sameUserPost()"
         @click="validateCheck(); replyPost(currentPost[currentIndexPost].postcontent);">
         Reply
@@ -123,7 +133,7 @@ import TopicsDataService from "../services/TopicsDataService";
 const user = JSON.parse(localStorage.getItem("user"));
 
 export default {
-  name: "edit-topic",
+  name: "topic",
   data() {
     return {
       content:"",

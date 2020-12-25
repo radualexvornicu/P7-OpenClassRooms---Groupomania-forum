@@ -1,9 +1,54 @@
 <template>
 
-  <div class="jumbotron jumbotron-fluid">    
-    <div class="d-flex flex-column bd-highlight mb-3"
+  <div class="jumbotron jumbotron-fluid p-0">    
+    <header class="d-flex flex-row bd-highlight mb-3"
     v-if="content == 'Moderator Content.'">
-      <div class="list row">
+        <div class="col-md-4">
+          <div class="col-md-12"> 
+            per Page
+            <select v-model="pageSizeCat" @change="PageSizeChangeCat($event)">
+            <option v-for="sizeCat in pageSizesCat" :key="sizeCat" :value="sizeCat">
+            {{ sizeCat }}
+            </option>
+            </select>
+          <h5 >Categories</h5>
+          </div>
+          
+         <div class="p-0 m-0">
+          <b-pagination
+        v-model="pageCat"
+        :total-rows="countCat"
+        :per-page="pageSizeCat"
+        size="sm"
+        prev-text="Prev"
+        next-text="Next"
+        @change="PageChangeCat"
+          > </b-pagination>          
+      </div>
+          <ul class="list-group">
+        <li
+  
+  class="list-group-item list-group-item-action list-group-item-info p-1 m-1 rounded"
+  :class="{ active: indexCat == currentIndexCat }"
+  v-for="(categorie, indexCat) in categories"
+  :key="indexCat"
+  @click.stop="validateCheck(); setActiveCategorie(categorie, indexCat); getUserNameCat(categorie.userId);"
+>
+  <h6 class="">{{ categorie.catname }} </h6> 
+    <p class="border-top border-danger ml-1 p-0 d-flex justify-content-between align-items-center" 
+    v-if="indexCat == currentIndexCat">{{ categorie.catdescription }}
+    <span class="badge badge-danger badge-pill m-1">{{countTopic}}</span>
+    </p>
+  </li>
+</ul>
+<ul class="list-group">
+        <li  class="list-group-item list-group-item-action list-group-item-success p-1 m-1 rounded"
+        @click="validateCheck(); showAllTopics();  ">
+          All Discution Topics
+        </li>
+      </ul>
+        </div>
+                  
         <div class="col-md-8">
           <div class="input-group mb-3">
             <input
@@ -16,282 +61,159 @@
               <button
                 class="btn btn-outline-secondary"
                 type="button"
-                @click="validateCheck(); searchCatname; "
+                @click="validateCheck(); pageCat = 1; searchCatname; "
               >
                 Search
               </button>
             </div>
           </div>
+        
+          
           <button
             class="m-3 btn btn-sm btn-success"
             @click="validateCheck(); refreshCategorieList();"
           >
             Refresh Categorie list
           </button>
-          <div v-switch="submitted">
-    <div v-case="0"></div>
-    <div v-case="1"><div  class="submit-form  col-md-6">
-              <h5 >Add Topic to Active Categorie</h5>
-              <div class="form-group">
-                <label for="topicsubject">Topic subject</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="topicsubject"
-                  required
-                  v-model="topic.topicsubject"
-                  name="topicsubject"
-                />
-              </div>            
-              <button @click="validatecheck(); saveTopic();" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div>
-            </div>
-    <div v-case="2"><div  class="submit-form  col-md-6">
-              <h5 >Edit Topic in Active Categorie</h5>
-              <div class="form-group">
-                <label for="topicsubject">Topic subject</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="topicsubject"
-                  required
-                  v-model="topic.topicsubject"
-                  name="topicsubject"
-                />
-              </div>            
-              <button @click="validateCheck(); editTopic(currentTopic.id);" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div></div>
-    <div v-case="3"><div  class="submit-form  col-md-6">
-              <h5 >Add Post to Active Topic</h5>
-              <div class="form-group">
-                <label for="postcontent">Post Content</label>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="postcontent"
-                  required
-                  v-model="post.postcontent"
-                  name="postcontent"
-                />
-              </div>            
-              <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div></div>
-    <div v-case="4"><div  class="submit-form  col-md-6">
-              <h5 >Edit Current Active Post</h5>
-              <div class="form-group">
-                <label for="postcontent">Post Content</label>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="postcontent"
-                  required
-                  v-model="post.postcontent"
-                  name="postcontent"
-                />
-              </div>            
-              <button @click="validateCheck(); editPost(currentPost.id)" class="btn btn-success m-1 p-0">
-                Submit
-              </button>
-              <button @click="validateCheck(); submitted = 0;" class="btn btn-danger m-1 p-0">
-                Cancel
-              </button>
-            </div></div>
-          </div>        
-        </div>
-        
-      </div>
-      <div class="col-md-12">
-      <div class="mb-3">
-        Items per Page:
-        <select v-model="pageSizeCat" @change="PageSizeChangeCat($event)">
-          <option v-for="sizeCat in pageSizesCat" :key="sizeCat" :value="sizeCat">
-            {{ sizeCat }}
-          </option>
-        </select>
-      </div>
-
-      <b-pagination
-        v-model="pageCat"
-        :total-rows="countCat"
-        :per-page="pageSizeCat"
-        size="sm"
-        prev-text="Prev"
-        next-text="Next"
-        @change="PageChangeCat"
-      ></b-pagination>
-    </div>
-      <div class="d-flex flex-wrap">
-        <div class="col-md-4">
-          <h4>Categories List</h4>
-          <div
-            type="button"
-            class="card border-info mb-3 btn-light"
-            :class="{ active: indexCat == currentIndexCat }"
-            v-for="(categories, indexCat) in categories"
-            :key="indexCat"
-            @click="validateCheck(); setActiveCategorie(categories, indexCat); getUserNameCat(categories.userId);"
-          >
-            <div class="card-header">
-              <h5>{{ categories.catname }} </h5>
-              
-            </div>
-            <div class="card-body" v-if="indexCat == currentIndexCat">
-              <h6 class="card-title font-weight-bold">Categorie Description </h6>
-              
-              <h6 class="card-text">{{ categories.catdescription }}</h6>
-              <cite><h6>created by <strong>{{userNameCat}}</strong></h6></cite> 
-            </div>
-            <div>
-              
-              <button
-                type="button"
-                class="btn btn-success m-1 p-0"
-                v-if="indexCat == currentIndexCat"
-                @click="validateCheck(); submitted = 1;"
-              >
-                Add Topic
-              </button>
-              
-            </div>
-          </div>
+          <router-link :to="'/categorie/add'" class="btn btn-sm btn-info">Add New Categorie</router-link>
           
-        </div>
-
-        <div class="col-md-4" v-if="currentCategorie">
-          <div class="col-md-12">
-      <div class="mb-3">
-        Items per Page:
-        <select v-model="pageSizeTopic" @change="PageSizeChangeTopic($event)">
-          <option v-for="sizeTopic in pageSizesTopic" :key="sizeTopic" :value="sizeTopic">
-            {{ sizeTopic }}
-          </option>
-        </select>
-      </div>
-
-      <b-pagination
-        v-model="pageTopic"
-        :total-rows="countTopic"
-        :per-page="pageSizeTopic"
-        size="sm"
-        prev-text="Prev"
-        next-text="Next"
-        @change="PageChangeTopic"
-      ></b-pagination>
-    </div>
-          <h4>Topics List</h4>
-          <div
+        <div v-if="currentCategorie" class="flex-column">
+          <router-link :to="'/categorie/' + currentCategorie.id" class="btn btn-warning m-0 p-0">
+          Edit</router-link>
+          <button
             type="button"
-            class="card border-info mb-3 btn-light"
-            :class="{ active: indexTopic == currentIndexTopic }"
-            v-for="(topics, indexTopic) in topics"
-            :key="indexTopic"
-            @click="validateCheck(); setActiveTopic(topics, indexTopic); getUserNameTopic(topics.userId)"
+            class="btn btn-danger m-1 p-0"
+            v-if="currentCategorie"
+            @click="validateCheck(); removeCategorie(currentCategorie.id);"
           >
-            <div class="card-header">
-              <h5>{{ topics.topicsubject }}</h5>
-            </div>
-            <div class="card-body" v-if="indexTopic == currentIndexTopic">
-              <h6 class="card-title font-weight-bold">Topic Thead</h6>
-              <h6 class="card-text">Active thred length - {{posts.length}}</h6>
-              <cite><h6>created by <strong>{{userNameTopic}}</strong></h6></cite>
-            </div>
-            <div>
-              <button
-                type="button"
-                class="btn btn-warning m-1 p-0"
-                v-if="indexTopic == currentIndexTopic"
-                @click=" validateCheck(); submitted = 2;"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                class="btn btn-success m-1 p-0"
-                v-if="indexTopic == currentIndexTopic"
-                @click="validateCheck(); submitted = 3;"
-              >
-                Add Post
-              </button>
+            Delete
+          </button>
+  
+             
+        </div>      
+      <main >
+      <section  v-show="allCategorie">
+  <div class=" m-0 p-0">
+    <div class="mb-3">
+      <select v-model="pageSizeTopic" @change="PageSizeChangeTopic($event)">
+        <option v-for="sizeTopic in pageSizesTopic" :key="sizeTopic" :value="sizeTopic">
+          {{ sizeTopic }}
+        </option>
+      </select>
+    </div>
 
-              
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4" v-if="currentCategorie">
-          <div class="col-md-12">
-      <div class="mb-3">
-        Items per Page:
-        <select v-model="pageSizePost" @change="PageSizeChangePost($event)">
-          <option v-for="sizePost in pageSizesPost" :key="sizePost" :value="sizePost">
-            {{ sizePost }}
-          </option>
-        </select>
+    <b-pagination v-model="pageTopic" :total-rows="countTopic" :per-page="pageSizeTopic" size="sm" prev-text="Prev"
+      next-text="Next" @change="PageChangeTopic"></b-pagination>
+  </div>
+  <h4>All Discution Topics</h4>
+  <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
+    v-for="(topic, indexTopic) in topics" :key="indexTopic"
+    @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
+    <div class="card-header  ">
+      <div class="d-flex justify-content-between align-items-center">
+      <p class="card-text font-weight-bold">{{ topic.topicsubject }}</p> 
+      <p>{{topic.updatedAt | moment("from", "now")}}</p>
+     
       </div>
-
-      <b-pagination
-        v-model="pagePost"
-        :total-rows="countPost"
-        :per-page="pageSizePost"
-        size="sm"
-        prev-text="Prev"
-        next-text="Next"
-        @change="PageChangePost"
-      ></b-pagination>
+       <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
+            <div  >
+      <h6>By:
+        <router-link :to="'/profile/' + currentTopic.userId">
+          
+        
+        {{userNameTopic}}
+        </router-link>
+        </h6>
+      
+      <router-link :to="'/topic/edit/' + currentTopic.id"  class="btn btn-warning mr-1 p-0"
+        @click=" validateCheck(); ">
+        Edit
+      </router-link>  
+      <button  class="btn btn-danger m-0 p-0" 
+        @click="validateCheck(); removeTopic(currentTopic.id);">
+        Delete
+      </button>
     </div>
-          <h4>Posts Thread</h4>
-          <div
-            type="button"
-            class="card border-info mb-3 btn-light"
-              :class="{ active: indexPost == currentIndexPost }"
-            v-for="(posts, indexPost) in posts"
-              :key="indexPost"
-              @click="validateCheck(); setActivePost(posts, indexPost); getUserNamePost(posts.userId)">
-            <div class="card-header">
-              <h6>{{ posts.postcontent }}</h6>
-            </div>
-            <div class="card-body" v-if="indexPost == currentIndexPost">
-              <cite><h6 class="card-text">created at {{posts.createdAt}}</h6></cite>
-              <cite><h6 class="card-text">created at {{posts.updatedAt}}</h6></cite>
-              <cite><h6>created by <strong>{{userNamePost}}</strong></h6></cite>
-            </div>
             <div>
-              <button
-                type="button"
-                class="btn btn-warning m-1 p-0"
-                v-if="indexPost == currentIndexPost"
-                @click="validateCheck();  submitted =4;"
-              >
-                Edit
-              </button>
-              
-              <button
-                type="button"
-                class="btn btn-danger m-1 p-0"
-                v-if="indexPost == currentIndexPost"
-                @click="validateCheck(); removePost(currentTopic.id, currentPost.id);"
-              >
-                Delete
-              </button>
+            <router-link :to="'/topic/'+ currentTopic.id" class="badge badge-info"
+            >View Comments <span
+             class="badge badge-danger badge-pill">{{countPost}}
+             </span>
+             </router-link>    
+            
+      
             </div>
-          </div>
-        </div>        
-      </div>      
+            
+            
     </div>
+    </div>
+    
+  </div>
+</section>
+<section  v-if="currentCategorie">
+  <div class=" m-0 p-0">
+    <div class="mb-3">
+      <select v-model="pageSizeTopic" @change="PageSizeChangeTopic($event)">
+        <option v-for="sizeTopic in pageSizesTopic" :key="sizeTopic" :value="sizeTopic">
+          {{ sizeTopic }}
+        </option>
+      </select>
+    </div>
+
+    <b-pagination v-model="pageTopic" :total-rows="countTopic" :per-page="pageSizeTopic" size="sm" prev-text="Prev"
+      next-text="Next" @change="PageChangeTopic"></b-pagination>
+  </div>
+  <h4>{{currentCategorie.catname}} => Discution Topics</h4> 
+  <router-link :to="'/topic/add/'+ currentCategorie.id" class="btn btn-success m-1 p-0"
+  >Start Topic Discution</router-link>  
+
+  <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
+    v-for="(topic, indexTopic) in topics" :key="indexTopic"
+    @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
+    <div class="card-header  ">
+      <div class="d-flex justify-content-between align-items-center">
+      <p class="card-text font-weight-bold">{{ topic.topicsubject }}</p> 
+      <p>{{topic.updatedAt | moment("from", "now")}}</p>
+     
+      </div>
+       <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
+            <div  >
+      <h6>By:<router-link :to="'/profile/' + currentTopic.userId">
+          
+        
+        {{userNameTopic}}
+        </router-link>
+        </h6>
+      
+      <router-link :to="'/topic/edit/' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
+        @click=" validateCheck(); ">
+        Edit
+      </router-link>  
+      <button  class="btn btn-danger m-0 p-0" 
+        @click="validateCheck(); removeTopic(currentTopic.id);">
+        Delete
+      </button>
+    </div>
+            <div>
+            <router-link :to="'/topic/'+ currentTopic.id" class="badge badge-info"
+            >View Comments <span
+             class="badge badge-danger badge-pill">{{countPost}}
+             </span>
+             </router-link>    
+            
+      
+            </div>
+            
+            
+    </div>
+    </div>
+    
+  </div>
+</section>
+    </main>
+    </div>
+    </header>
+    
   </div>
 </template>
 
@@ -303,10 +225,11 @@ import PostsDataService from "../services/PostsDataService";
 const user = JSON.parse(localStorage.getItem("user"));
 
 export default {
-  name: "Moderator",
+  name: "Admin",
   data() {
     return {
       content: "",
+      allCategorie: true,
       indexCat: "",
       categories: [],
       currentCategorie: null,
@@ -341,8 +264,9 @@ export default {
       userNameCat: "",
       userNameTopic: "",
       userNamePost: "",
-     submitted: 0,
-     pageCat: 1,
+      submitted: 0,
+      //
+      pageCat: 1,
       countCat: 0,
       pageSizeCat: 3,
 
@@ -350,20 +274,20 @@ export default {
 
       pageTopic: 1,
       countTopic: 0,
-      pageSizeTopic: 3,
+      pageSizeTopic: 6,
 
-      pageSizesTopic: [3, 6, 9],
+      pageSizesTopic: [6, 9],
 
       pagePost: 1,
       countPost: 0,
       pageSizePost: 3,
 
       pageSizesPost: [3, 6, 9],
+      //
     };
   },
-
   methods: {
-   validateCheck(){
+    validateCheck(){
         console.log("click for validateCheck");
            UserService.getModeratorBoard().then(
          (response) => {
@@ -380,6 +304,7 @@ export default {
          }
        );
 },
+
 getUserNameCat(id){
         UserService.getUserName(id)
         .then((response) => {
@@ -398,7 +323,6 @@ getUserNameTopic(id){
         console.log(e);
       });
 },
-
 // 1
 getRequestParamsCat(catname, pageCat, pageSizeCat) {
       let params = {};
@@ -474,7 +398,7 @@ retrieveTopics(catID) {
         this.pageTopic,
         this.pageSizeTopic
       );
-    TopicsDataService.getAll(params, catID)
+    TopicsDataService.getAllPage(params, catID)
       .then((response) => {
          console.log(response.data);
         this.topics = response.data.topics;
@@ -488,18 +412,25 @@ retrieveTopics(catID) {
 },
 //  3
  PageChangeTopic(value) {
-      this.pageTopic = value;
-      var catID = this.currentCategorie.id;
-    console.log(catID);
-    this.retrieveTopics(catID);
+      this.pageTopic = value;      
+      if(!this.allCategorie){
+        var catID = this.currentCategorie.id;
+        this.retrieveTopics(catID);
+      } else {
+        this.showAllTopics();
+      }
+    
 },
 // 4
 PageSizeChangeTopic(event) {
       this.pageSizeTopic = event.target.value;
-      this.pageTopic = 1;
+      this.pageTopic = 1;      
+    if(!this.allCategorie){
       var catID = this.currentCategorie.id;
-    console.log(catID);
-    this.retrieveTopics(catID);
+        this.retrieveTopics(catID);
+      } else {
+        this.showAllTopics();
+      }
     },
 // 1
 getRequestParamsPost(postcontent, pagePost, pageSizePost) {
@@ -555,7 +486,6 @@ PageSizeChangePost(event) {
     console.log(topicID);
     this.retrievePosts(topicID);
     },
-
 refreshCategorieList() {
     this.submitted = 0;
     this.retrieveCategories();
@@ -575,6 +505,10 @@ setActiveCategorie(categorie, indexCat) {
     this.currentIndexCat = indexCat;
     var catID = this.currentCategorie.id;
     console.log(catID);
+    this.allCategorie = false;
+    this.pageTopic = 1;
+      this.countTopic = 0;
+      this.pageSizeTopic = 6;
     this.retrieveTopics(catID);
 },
 removeCategorie(catId) {
@@ -613,13 +547,42 @@ searchCatname() {
 },
 
 setActiveTopic(topic, indexTopic) {
+    
 this.currentTopic = topic;
 this.currentIndexTopic = indexTopic;
 var topID = this.currentTopic.id;
 console.log(topID);
 this.retrievePosts(topID);
 },
-
+removeTopic(topicId, catId){
+    console.log(topicId);
+    var r = confirm("Press a button!");
+    if (r == true) {
+      console.log("You pressed OK!");
+      var r2 = confirm("Press a button AGAIN!");
+      if (r2 == true) {
+        console.log("You pressed OK AGAIN!");
+      TopicsDataService.delete(topicId)
+      .then((response) => {
+        console.log(response.data);
+        if(catId){
+          this.retrieveTopics(catId);
+        } else{
+          this.showAllTopics();
+        }
+        
+        
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+      }else {
+      console.log("You pressed ABORTED!");
+          }
+    } else {
+      console.log("You pressed CANCEL!");
+    }
+},
 removePost(topicId, postId){
     console.log(postId);
           var r = confirm("Press a button!");
@@ -645,6 +608,26 @@ removePost(topicId, postId){
           }
 },
 
+editCategorie(catId) {
+    var data = {
+      catname: this.categorie.catname,
+      catdescription: this.categorie.catdescription,
+      userId: user.id,
+    };
+    console.log(data);
+    var id = catId;
+    console.log(id);
+    CategoriesDataService.update(id, data)
+      .then((response) => {
+        this.categorie.id = response.data.id;
+        console.log(response.data);
+        this.submitted = 0;
+        this.refreshCategorieList();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
 editTopic(topicId){
     var data = {
       topicsubject: this.topic.topicsubject,
@@ -656,14 +639,31 @@ editTopic(topicId){
     TopicsDataService.update(id, data).then((response) => {
         this.topic.id = response.data.id;
         console.log(response.data);
-        this.submitted = 0;
+        this.submittedEditTopic = false;
         this.retrieveTopics(this.currentCategorie.id);
       })
       .catch((e) => {
         console.log(e);
       });
 },
-
+saveCategorie() {
+    var data = {
+      catname: this.categorie.catname,
+      catdescription: this.categorie.catdescription,
+      userId: user.id,
+    };
+    console.log(data);
+    CategoriesDataService.create(data)
+      .then((response) => {
+        this.categorie.id = response.data.id;
+        console.log(response.data);
+        this.submitted = 0;
+        this.refreshCategorieList();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+},
 saveTopic(){
     var data = {
       topicsubject : this.topic.topicsubject,
@@ -675,7 +675,7 @@ saveTopic(){
     .then((response) => {
         this.topic.id = response.data.id;
         console.log(response.data);
-        this.submitted = 0;
+        this.submittedSaveTopic = false;
         this.retrieveTopics(this.currentCategorie.id);
       })
       .catch((e) => {
@@ -694,7 +694,7 @@ savePost() {
       .then((response) => {
         this.post.id = response.data.id;
         console.log(response.data);
-        this.submitted = 0;
+        this.submittedSavePost = false;
         this.retrievePosts(this.currentTopic.id);
       })
       .catch((e) => {
@@ -713,7 +713,7 @@ editPost(postId){
       .then((response) => {
         this.post.id = response.data.id;
         console.log(response.data);
-        this.submitted = 0;
+        this.submittedEditPost = false;
         this.retrievePosts(this.currentTopic.id);
       })
       .catch((e) => {
@@ -721,6 +721,7 @@ editPost(postId){
       });
 },
 setActivePost(post, indexPost) {
+   
     this.currentPost = post;
     this.currentIndexPost = indexPost;
 }, 
@@ -733,9 +734,34 @@ getUserNamePost(id){
         console.log(e);
       });
 },
+showAllTopics(){
+  this.currentCategorie = null;
+  this.currentIndexCat = -1;
+this.currentTopic = null;
+  this.currentIndexTopic = -1;
+  const params = this.getRequestParamsTopic(
+        this.topicsubject,
+        this.pageTopic,
+        this.pageSizeTopic
+      );
+    TopicsDataService.getAll(params)
+      .then((response) => {
+         console.log(response.data);
+        this.topics = response.data.topics;
+        console.log(this.topics);
+        this.countTopic = response.data.totalItems;
+        console.log(this.countTopic);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+      this.allCategorie = true;
+},
+
   },
   mounted() {
     this.retrieveCategories();
+    this.showAllTopics();
     UserService.getModeratorBoard().then(
       (response) => {
         this.content = response.data;        
@@ -752,3 +778,14 @@ getUserNamePost(id){
   },
 };
 </script>
+
+<style >
+.list-group li {
+  cursor: pointer;
+}
+.card{
+  cursor: pointer;
+}
+
+
+</style>

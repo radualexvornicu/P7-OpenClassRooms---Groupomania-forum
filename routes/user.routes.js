@@ -13,6 +13,8 @@ module.exports = function(app) {
   app.get("/api/content/all", controller.allAccess);
 
    app.get("/api/content/name/:id", controller.findOne );
+   app.delete("/api/content/profile/:id", controller.delete);
+   app.put("/api/content/profile/:id", controller.update);
 
   app.get(
     "/api/content/user",

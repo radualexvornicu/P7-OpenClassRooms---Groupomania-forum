@@ -118,9 +118,7 @@
        <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
             <div  >
       <h6>By:
-        <router-link :to="'/profile/' + currentTopic.userId">
-          
-        
+        <router-link :to="'/profile/' + currentTopic.userId">        
         {{userNameTopic}}
         </router-link>
         </h6>

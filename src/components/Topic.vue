@@ -1,5 +1,5 @@
 <template>
-<div class="jumbotron jumbotron-fluid d-flex flex-row justify-content-center p-0">
+<div class="jumbotron jumbotron-fluid d-flex flex-column  p-1">
 <section class="col-6">
   <div class="card border-success mb-3">
     <div class="card-header  ">
@@ -23,7 +23,7 @@
       </div>
        <div  class="card-body  p-0 d-flex justify-content-between align-items-center">
             <div  >
-      <h6>By:<router-link :to="'/profile/' + currentTopic.userId">
+      <h6>By:<router-link :to="'/profile/' + topic.userId">
           
         
         {{userNameTopic}}
@@ -86,7 +86,10 @@
               Cancel
             </button>
   </div>
-  <ul>
+  
+  
+</section>
+<ul class="col-md-9">
   
   <li class="list-group-item list-group-item-warning mb-2 rounded "
     v-for="(post, indexPost) in posts" :key="indexPost"
@@ -119,9 +122,6 @@
     
   </li>
   </ul>
-  
-</section>
-
 </div>
   
           

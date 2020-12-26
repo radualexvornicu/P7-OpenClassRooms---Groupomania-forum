@@ -75,20 +75,9 @@
           >
             Refresh Categorie list
           </button>
-          <router-link :to="'/categorie/add'" class="btn btn-sm btn-info">Add New Categorie</router-link>
-          
         <div v-if="currentCategorie" class="flex-column">
           <router-link :to="'/categorie/' + currentCategorie.id" class="btn btn-warning m-0 p-0">
-          Edit</router-link>
-          <button
-            type="button"
-            class="btn btn-danger m-1 p-0"
-            v-if="currentCategorie"
-            @click="validateCheck(); removeCategorie(currentCategorie.id);"
-          >
-            Delete
-          </button>
-  
+          Edit</router-link> 
              
         </div>      
       <main >
@@ -129,10 +118,6 @@
         @click=" validateCheck(); ">
         Edit
       </router-link>  
-      <button  class="btn btn-danger m-0 p-0" 
-        @click="validateCheck(); removeTopic(currentTopic.id);">
-        Delete
-      </button>
     </div>
             <div>
             <router-link :to="'/topic/'+ currentTopic.id" class="badge badge-info"
@@ -189,10 +174,6 @@
         @click=" validateCheck(); ">
         Edit
       </router-link>  
-      <button  class="btn btn-danger m-0 p-0" 
-        @click="validateCheck(); removeTopic(currentTopic.id);">
-        Delete
-      </button>
     </div>
             <div>
             <router-link :to="'/topic/'+ currentTopic.id" class="badge badge-info"

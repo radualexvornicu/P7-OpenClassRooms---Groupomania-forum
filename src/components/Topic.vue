@@ -55,6 +55,7 @@
     <div class="form-group">
               <label for="postcontent">Post a Comment</label>
               <textarea
+              autofocus
                 type="text"
                 class="form-control"
                 id="postcontent"
@@ -71,6 +72,7 @@
   <div class="form-group">
               <label for="replypost">Reply a Comment</label>
               <textarea
+              autofocus
                 type="text"
                 class="form-control"
                 id="replypost"
@@ -105,7 +107,8 @@
         {{userNameTopic}}
         </router-link>
         </h6>
-      <button type="button" class="btn btn-success m-1 p-0" v-show="sameUserPost()"
+        <div v-show="sameUserPost()" >
+          <button type="button" class="btn btn-success m-1 p-0" 
         @click="validateCheck(); replyPost(currentPost[currentIndexPost].postcontent);">
         Reply
       </button>
@@ -118,6 +121,8 @@
         @click="validateCheck(); removePost(topic.id, currentPost[currentIndexPost].id);">
         Delete
       </button>
+        </div>
+      
     </div>
     
   </li>

@@ -74,23 +74,7 @@
             @click="validateCheck(); refreshCategorieList();"
           >
             Refresh Categorie list
-          </button>
-          <router-link :to="'/categorie/add'" class="btn btn-sm btn-info">Add New Categorie</router-link>
-          
-        <div v-if="currentCategorie" class="flex-column">
-          <router-link :to="'/categorie/' + currentCategorie.id" class="btn btn-warning m-0 p-0">
-          Edit</router-link>
-          <button
-            type="button"
-            class="btn btn-danger m-1 p-0"
-            v-if="currentCategorie"
-            @click="validateCheck(); removeCategorie(currentCategorie.id);"
-          >
-            Delete
-          </button>
-  
-             
-        </div>      
+          </button>            
       <main >
       <section  v-show="allCategorie">
   <div class=" m-0 p-0">
@@ -116,16 +100,13 @@
      
       </div>
        <div v-if="indexTopic == currentIndexTopic" class="card-body  p-0 d-flex justify-content-between align-items-center">
-            <div  >
-      <h6>By:
-        <router-link :to="'/profile/' + currentTopic.userId">
-          
-        
+            <h6>By:
+        <router-link :to="'/profile/' + currentTopic.userId">        
         {{userNameTopic}}
         </router-link>
         </h6>
-      
-      <router-link :to="'/topic/edit/' + currentTopic.id"  class="btn btn-warning mr-1 p-0"
+        <div  v-if="sameUserTopic()">
+        <router-link :to="'/topic/edit/' + currentTopic.id"  class="btn btn-warning mr-1 p-0"
         @click=" validateCheck(); ">
         Edit
       </router-link>  
@@ -133,7 +114,7 @@
         @click="validateCheck(); removeTopic(currentTopic.id);">
         Delete
       </button>
-    </div>
+      </div>
             <div>
             <router-link :to="'/topic/'+ currentTopic.id" class="badge badge-info"
             >View Comments <span
@@ -184,8 +165,8 @@
         {{userNameTopic}}
         </router-link>
         </h6>
-      
-      <router-link :to="'/topic/edit/' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
+      <div v-if="sameUserTopic()">
+        <router-link :to="'/topic/edit/' +currentTopic.id"  class="btn btn-warning mr-1 p-0"
         @click=" validateCheck(); ">
         Edit
       </router-link>  
@@ -193,6 +174,8 @@
         @click="validateCheck(); removeTopic(currentTopic.id);">
         Delete
       </button>
+      </div>
+      
     </div>
             <div>
             <router-link :to="'/topic/'+ currentTopic.id" class="badge badge-info"
@@ -304,7 +287,14 @@ export default {
          }
        );
 },
-
+sameUserTopic(){
+      if(this.userNameTopic == user.username){
+        return true;
+      }
+      else {
+        return false;
+      }
+  },
 getUserNameCat(id){
         UserService.getUserName(id)
         .then((response) => {

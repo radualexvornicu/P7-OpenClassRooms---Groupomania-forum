@@ -6,6 +6,7 @@
             <div class="form-group">
               <label for="topicsubject">Topic subject</label>
               <input
+              autofocus
                 type="text"
                 class="form-control"
                 id="topicsubject"
@@ -99,7 +100,7 @@ editTopic(){
     TopicsDataService.update(id, data).then((response) => {
         
         console.log(response.data);
-        this.submitted = false;
+        this.submitted = true;
       })
       .catch((e) => {
         console.log(e);

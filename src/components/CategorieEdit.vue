@@ -7,6 +7,7 @@
             <div class="form-group">
               <label for="catname">Categorie Name</label>
               <input
+              autofocus 
                 type="text"
                 class="form-control"
                 id="catname"

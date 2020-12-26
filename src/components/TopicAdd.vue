@@ -7,6 +7,7 @@
             <div class="form-group">
               <label for="topicsubject">Topic Content</label>
               <textarea
+              autofocus 
                 type="text"
                 class="form-control"
                 id="topicsubject"

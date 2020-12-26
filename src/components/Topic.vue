@@ -5,14 +5,14 @@
     <div class="card-header  ">
       <div id="v-switch main" v-switch="role">
               <div id="v-case 1" v-case="'ROLE_ADMIN'">
-               <router-link :to="'/admin'" class="btn btn-danger rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
+               <router-link :to="'/admin'" class="btn btn-warning rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
                 
               </div>
               <div id="v-case 1" v-case="'ROLE_MODERATOR'">
-                <router-link :to="'/mod'" class="btn btn-danger rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
+                <router-link :to="'/mod'" class="btn btn-warning rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
               </div>
               <div v-default>
-                <router-link :to="'/user'" class="btn btn-danger rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
+                <router-link :to="'/user'" class="btn btn-warning rounded-circle m-1 pl-1 pr-1 pt-0 pb-0">X</router-link>
               </div>
             </div>
       <div class="d-flex justify-content-between align-items-center">

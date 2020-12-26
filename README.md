@@ -3,6 +3,8 @@
 ## Project setup
 ```
 npm install
+npm install vue-router vue-fontawesome axios bootstrap bootstrap-vue vue-moment vee-validate v-switch-case 
+ 
 ```
 
 ### Compiles and hot-reloads for development

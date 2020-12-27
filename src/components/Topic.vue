@@ -81,7 +81,7 @@
                 name="replypost"
               />
             </div>            
-            <button @click="validateCheck(); savePost();" class="btn btn-success m-1 p-0">
+            <button @click=" validateCheck(); savePost();" class="btn btn-success m-1 p-0">
               Submit
             </button>
             <button @click="validateCheck(); reply = false;" class="btn btn-danger m-1 p-0">
@@ -107,13 +107,13 @@
         {{userNameTopic}}
         </router-link>
         </h6>
-        <div v-show="sameUserPost()" >
+        <div v-show="!sameUserPost()" >
           <button type="button" class="btn btn-success m-1 p-0" 
         @click="validateCheck(); replyPost(currentPost[currentIndexPost].postcontent);">
         Reply
       </button>
       <router-link :to="'/post/edit/' + currentPost[currentIndexPost].id" class="btn btn-warning m-1 p-0" 
-        @click="validateCheck();">
+      >
         Edit
       </router-link>
 
@@ -161,7 +161,7 @@ export default {
         topicId: "",
         userId: "",
       },
-       userNameTopic: "",
+      userNameTopic: "",
       userNamePost: "",
       pagePost: 1,
       countPost: 0,
@@ -174,7 +174,11 @@ export default {
   methods: {
     // 1
     validateCheck(){
-        console.log("click for validateCheck");
+        
+
+        if(this.role === 'ROLE_ADMIN')
+        {
+          console.log("click for validateCheck", this.role);
            UserService.getAdminBoard().then(
          (response) => {
            this.content = response.data;        
@@ -189,12 +193,46 @@ export default {
             
          }
        );
+        } else if(this.role === 'ROLE_MODERATOR'){
+          console.log("click for validateCheck", this.role);
+          UserService.getModeratorBoard().then(
+         (response) => {
+           this.content = response.data;        
+         },
+         (error) => { 
+           this.content =
+             (error.response && error.response.data) ||
+             error.message ||
+             error.toString();
+             this.$store.dispatch('auth/logout');
+             this.$router.push('/login');
+            
+         }
+       );
+        } else {
+          console.log("click for validateCheck", this.role);
+          UserService.getUserBoard().then(
+         (response) => {
+           this.content = response.data;        
+         },
+         (error) => { 
+           this.content =
+             (error.response && error.response.data) ||
+             error.message ||
+             error.toString();
+             this.$store.dispatch('auth/logout');
+             this.$router.push('/login');
+            
+         }
+       );
+        }
+          
 },
 getUserNameTopic(id){
     UserService.getUserName(id)
     .then((response) => {
       this.userNameTopic = response.data.username;
-      console.log(this.user.username, "loged user");
+      console.log(user.username, "loged user");
       console.log(response.data);
     }).catch((e) => {
         console.log(e);
@@ -284,11 +322,20 @@ setActivePost(post, indexPost) {
     console.log(this.currentPost[this.currentIndexPost]);
 }, 
 savePost() {
-    var data = {
-      postcontent: this.replypost,
+  var data
+  if(!this.reply){
+    data = {
+      postcontent: this.post.postcontent,
       topicId: this.topic.id,
       userId: user.id,
     };
+  } else {
+    data = {
+      postcontent: this.replypost,
+      topicId: this.topic.id,
+      userId: user.id,
+  }
+  }
     console.log(data);
     PostsDataService.create(data)
       .then((response) => {

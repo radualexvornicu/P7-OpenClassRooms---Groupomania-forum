@@ -402,6 +402,7 @@ export default {
     },
     savePost() {
       var data;
+      
       if (!this.reply) {
         data = {
           postcontent: this.post.postcontent,
@@ -428,9 +429,12 @@ export default {
         });
     },
     sameUserPost() {
+      console.log(this.userNamePost, "same user post");
       if (this.userNamePost === user.username) {
+        console.log("will return true");
         return true;
       } else {
+        console.log("will return false");
         return false;
       }
     },

@@ -10,7 +10,7 @@ class UserService {
     return axios.get(API_URL + 'all');
   }
   getUserName(id){
-    return axios.get(API_URL + `name/${id}`);
+    return axios.get(API_URL + `name/${id}`, { headers: authHeader() });
   }
   update(id, data) {
     return http.put(API_URL + `profile/${id}`, data);

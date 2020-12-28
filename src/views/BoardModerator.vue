@@ -95,7 +95,7 @@
       next-text="Next" @change="PageChangeTopic"></b-pagination>
   </div>
   <h4>All Discution Topics</h4>
-  <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
+  <div class="card border-danger mb-3" :class="{ active: indexTopic == currentIndexTopic }"
     v-for="(topic, indexTopic) in topics" :key="indexTopic"
     @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
     <div class="card-header  ">
@@ -152,7 +152,7 @@
   <router-link :to="'/topic/add/'+ currentCategorie.id" class="btn btn-success m-1 p-0"
   >Start Topic Discution</router-link>  
 
-  <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
+  <div class="card border-danger mb-3" :class="{ active: indexTopic == currentIndexTopic }"
     v-for="(topic, indexTopic) in topics" :key="indexTopic"
     @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
     <div class="card-header  ">
@@ -206,7 +206,7 @@ import PostsDataService from "../services/PostsDataService";
 const user = JSON.parse(localStorage.getItem("user"));
 
 export default {
-  name: "Admin",
+  name: "Moderator",
   data() {
     return {
       content: "",

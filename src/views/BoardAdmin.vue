@@ -61,7 +61,7 @@
               <button
                 class="btn btn-outline-secondary"
                 type="button"
-                @click="validateCheck(); pageCat = 1; searchCatname; "
+                @click="validateCheck();  searchCatname(); "
               >
                 Search
               </button>
@@ -71,7 +71,7 @@
           
           <button
             class="m-3 btn btn-sm btn-success"
-            @click="validateCheck(); refreshCategorieList();"
+            @click="validateCheck(); refreshCategorieList(); "
           >
             Refresh Categorie list
           </button>
@@ -106,7 +106,7 @@
       next-text="Next" @change="PageChangeTopic"></b-pagination>
   </div>
   <h4>All Discution Topics</h4>
-  <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
+  <div class="card border-danger mb-3" :class="{ active: indexTopic == currentIndexTopic }"
     v-for="(topic, indexTopic) in topics" :key="indexTopic"
     @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
     <div class="card-header  ">
@@ -165,7 +165,7 @@
   <router-link :to="'/topic/add/'+ currentCategorie.id" class="btn btn-success m-1 p-0"
   >Start Topic Discution</router-link>  
 
-  <div class="card border-success mb-3" :class="{ active: indexTopic == currentIndexTopic }"
+  <div class="card border-danger mb-3" :class="{ active: indexTopic == currentIndexTopic }"
     v-for="(topic, indexTopic) in topics" :key="indexTopic"
     @click="validateCheck(); setActiveTopic(topic, indexTopic); getUserNameTopic(topic.userId) ">
     <div class="card-header  ">
@@ -485,7 +485,6 @@ PageSizeChangePost(event) {
     this.retrievePosts(topicID);
     },
 refreshCategorieList() {
-    this.submitted = 0;
     this.retrieveCategories();
     this.currentTopic = null;
     this.currentIndexTopic = -1;
@@ -538,6 +537,7 @@ searchCatname() {
       .then((response) => {
         this.categories = response.data;
         console.log(response.data);
+        this.refreshCategorieList();
       })
       .catch((e) => {
         console.log(e);
@@ -619,7 +619,6 @@ editCategorie(catId) {
       .then((response) => {
         this.categorie.id = response.data.id;
         console.log(response.data);
-        this.submitted = 0;
         this.refreshCategorieList();
       })
       .catch((e) => {
